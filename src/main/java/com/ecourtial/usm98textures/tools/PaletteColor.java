@@ -1,12 +1,12 @@
-package com.ecourtial.usm98addboards.tools;
+package com.ecourtial.usm98textures.tools;
 
-public class BmpPixel {
+public class PaletteColor {
 
     private final int r;
     private final int g;
     private final int b;
 
-    public BmpPixel(int r, int g, int b) {
+    public PaletteColor(int r, int g, int b) {
         this.r = r;
         this.g = g;
         this.b = b;
