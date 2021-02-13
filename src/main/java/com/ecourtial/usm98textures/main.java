@@ -14,7 +14,7 @@ public class main {
         public static void main(String[] args) throws IOException {
             AdboardService addboardService = new AdboardService(
                     new PaletteExtractor(main.PalettePath),
-                    new AddboardToBmpConverter(main.AddboardPath, 85, 2244),
+                    new AddboardToBmpConverter(),
                     new BinaryExtractor()
             );
           

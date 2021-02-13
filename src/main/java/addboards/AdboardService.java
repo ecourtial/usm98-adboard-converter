@@ -24,7 +24,10 @@ public class AdboardService {
     public void convertToBmp() throws IOException {
         this.addBoardToBmpConverter.convert(
                 this.paletteExtractor.extractForConversionToBmp(),
-                this.binaryExtractor.getFileContent(main.AddboardPath)
+                this.binaryExtractor.getFileContent(main.AddboardPath),
+                85,
+                2244,
+                "AddBoard.bmp"
         );
     }
     
