@@ -44,7 +44,7 @@ public class PaletteExtractor {
 
         for (Map.Entry<String, String> line : lines.entrySet()) {
             String[] values = line.getValue().split(String.valueOf(";"));
-            this.ToSprColoursMap.put(values[0] + values[1] + values[2], values[4]);
+            this.ToSprColoursMap.put(values[0] + "-" + values[1] + "-" + values[2], values[4]);
         }               
          
         return this.ToSprColoursMap;

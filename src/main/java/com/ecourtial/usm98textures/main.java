@@ -1,8 +1,9 @@
 package com.ecourtial.usm98textures;
 
-import addboards.AdboardService;
+import addboards.AddboardService;
 import addboards.AddboardToBmpConverter;
-import com.ecourtial.usm98textures.tools.BinaryExtractor;
+import addboards.AddboardToSprConverter;
+import com.ecourtial.usm98textures.tools.BinaryService;
 import com.ecourtial.usm98textures.tools.PaletteExtractor;
 import java.io.IOException;
 
@@ -11,13 +12,15 @@ public class main {
         private static final String PalettePath = "USM-Colour-Palette.csv";
         public static final String AddboardPath = "ADBOARDS.SPR";
     
-        public static void main(String[] args) throws IOException {
-            AdboardService addboardService = new AdboardService(
+        public static void main(String[] args) throws IOException, Exception {
+            AddboardService addboardService = new AddboardService(
                     new PaletteExtractor(main.PalettePath),
                     new AddboardToBmpConverter(),
-                    new BinaryExtractor()
+                    new AddboardToSprConverter(),
+                    new BinaryService()
             );
           
-            addboardService.convertToBmp();
+            //addboardService.convertToBmp();
+            addboardService.convertToSpr();
     }
 }
