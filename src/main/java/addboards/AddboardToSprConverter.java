@@ -37,18 +37,11 @@ public class AddboardToSprConverter {
              if (coloursMap.containsKey(colorString)) {
                  outputString += coloursMap.get(colorString);
              } else {
-                 outputString += "00";
+                 outputString += "00"; // Black by default
                  System.out.println("Color not found in palette: " + colorString);
              }
          }  
-         /*
-         if (y == 0) {
-             System.out.println(outputString.length());
-         break;
-         }*/
         }
-        
-        System.out.println(outputString);
 
         return outputString;
     }

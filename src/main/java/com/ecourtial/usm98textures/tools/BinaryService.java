@@ -3,7 +3,6 @@ package com.ecourtial.usm98textures.tools;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.nio.file.Files;
 
 public class BinaryService {
@@ -16,14 +15,6 @@ public class BinaryService {
     }
     
     public void writeHexString(String filePath, String value, int position) throws IOException {
-        /*
-        File file = new File(filePath);
-        RandomAccessFile openedFile = new RandomAccessFile(file, "rw");
-        openedFile.seek(position);
-        openedFile.writeBytes(value);
-        openedFile.close();
-        */
-
         FileOutputStream fos = new FileOutputStream(filePath);
             fos.write(this.hexStringToByteArray(value));
 
