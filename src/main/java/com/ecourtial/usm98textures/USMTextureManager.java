@@ -1,20 +1,17 @@
 package com.ecourtial.usm98textures;
 
-import  com.ecourtial.usm98textures.Kernel;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import static javax.swing.JOptionPane.ERROR_MESSAGE;
+import static javax.swing.JOptionPane.showMessageDialog;
 
-/**
- *
- * @author ECO
- */
 public class USMTextureManager extends javax.swing.JFrame {
 
     Kernel kernel;
-    
+
     /**
      * Creates new form USMTextureManager
      */
@@ -57,6 +54,11 @@ public class USMTextureManager extends javax.swing.JFrame {
         });
 
         addboardsToSprButton.setText("Export to SPR");
+        addboardsToSprButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addboardsToSprButtonActionPerformed(evt);
+            }
+        });
 
         exitButton.setText("Exit");
         exitButton.addActionListener(new java.awt.event.ActionListener() {
@@ -84,8 +86,8 @@ public class USMTextureManager extends javax.swing.JFrame {
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                             .addComponent(addboardsToSprButton))
                         .addComponent(addboardsLabel)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 256, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 423, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(15, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -106,46 +108,60 @@ public class USMTextureManager extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    // Click when converting addboards to BMP
     private void addboardsToBmpButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addboardsToBmpButtonActionPerformed
         try {
-            this.process("addboardsToBmp");
+            this.process("addboardsToBmp", "This conversion usually takes a few seconds.");
         } catch (InterruptedException ex) {
             Logger.getLogger(USMTextureManager.class.getName()).log(Level.SEVERE, null, ex);
+            this.showErrorBox("Impossible to perform operation: " + ex.getMessage());
         }
     }//GEN-LAST:event_addboardsToBmpButtonActionPerformed
 
-    void process(String action) throws InterruptedException {
-      this.log("Starting process. Please wait...");
-      this.enableUi(false);
-       this.kernel.setAction(action);
-       ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-
-                  
-Thread splashThread = new Thread(new Runnable() {
-            public void run() {
-kernel.run();
-log("Done");
-enableUi(true);
-            }
-        });
-
-executor.schedule(splashThread, 0, TimeUnit.MILLISECONDS);
-
-    }
-    
-    void log(String msg) {
-        this.consoleBox.append(msg + "\n");
-    }
-    
-    void enableUi(Boolean status) {
-        this.addboardsToBmpButton.setEnabled(status);
-        this.addboardsToSprButton.setEnabled(status);
-    }
-    
     private void exitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitButtonActionPerformed
         System.exit(0);
     }//GEN-LAST:event_exitButtonActionPerformed
 
+    // Click when converting addboards to SPR
+    private void addboardsToSprButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addboardsToSprButtonActionPerformed
+        try {
+            this.process("addboardsToSpr", "This conversion usually take around one minute.");
+        } catch (InterruptedException ex) {
+            Logger.getLogger(USMTextureManager.class.getName()).log(Level.SEVERE, null, ex);
+            this.showErrorBox("Impossible to perform operation: " + ex.getMessage());
+        }
+    }//GEN-LAST:event_addboardsToSprButtonActionPerformed
+
+    // Controlling the whole process in a thread
+    void process(String action, String message) throws InterruptedException {
+        this.log("Starting process...");
+        this.log(message);
+        this.enableUi(false);
+        this.kernel.setAction(action);
+        ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+
+        Thread kernelThread = new Thread(() -> {
+            kernel.start();
+            log("Done!");
+            enableUi(true);
+        });
+
+        executor.schedule(kernelThread, 0, TimeUnit.MILLISECONDS);
+    }
+
+    private void log(String msg) {
+        this.consoleBox.append(msg + "\n");
+    }
+
+    private void enableUi(Boolean status) {
+        this.addboardsToBmpButton.setEnabled(status);
+        this.addboardsToSprButton.setEnabled(status);
+    }
+
+    private void showErrorBox(String msg) {
+        showMessageDialog(null, "Message", msg, ERROR_MESSAGE);
+    }
+    
     /**
      * @param args the command line arguments
      */

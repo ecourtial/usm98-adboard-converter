@@ -30,7 +30,7 @@ public class AddboardService {
 
     public void convertToBmp() throws IOException {
         this.addBoardToBmpConverter.convert(this.paletteExtractor.extractForConversionToBmp(),
-                this.binaryExtractor.getFileContent(Kernel.AddboardPath),
+                this.binaryExtractor.getFileContent(Kernel.ADDBOARD_PATH),
                 AddboardService.addboardsImageWidth,
                 AddboardService.addboardsImageHeight,
                 AddboardService.outputBmpFilePath
