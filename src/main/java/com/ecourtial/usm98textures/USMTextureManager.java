@@ -1,6 +1,9 @@
 package com.ecourtial.usm98textures;
 
 import  com.ecourtial.usm98textures.Kernel;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -31,7 +34,7 @@ public class USMTextureManager extends javax.swing.JFrame {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
-        jLabel1 = new javax.swing.JLabel();
+        addboardsLabel = new javax.swing.JLabel();
         addboardsToBmpButton = new javax.swing.JButton();
         addboardsToSprButton = new javax.swing.JButton();
         exitButton = new javax.swing.JButton();
@@ -44,7 +47,7 @@ public class USMTextureManager extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jLabel1.setText("Addboards");
+        addboardsLabel.setText("Addboards");
 
         addboardsToBmpButton.setText("Export to BMP");
         addboardsToBmpButton.addActionListener(new java.awt.event.ActionListener() {
@@ -80,7 +83,7 @@ public class USMTextureManager extends javax.swing.JFrame {
                             .addComponent(addboardsToBmpButton)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                             .addComponent(addboardsToSprButton))
-                        .addComponent(jLabel1)
+                        .addComponent(addboardsLabel)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 256, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -88,7 +91,7 @@ public class USMTextureManager extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1)
+                .addComponent(addboardsLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(addboardsToBmpButton)
@@ -104,30 +107,37 @@ public class USMTextureManager extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void addboardsToBmpButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addboardsToBmpButtonActionPerformed
-        // TODO add your handling code here:
-        
         try {
-            this.log("Starting process. Please wait...");
-             this.enableUi(false);
-            this.process("chouuuu");
-            this.enableUi(true);
-            this.log("Done!");
+            this.process("addboardsToBmp");
         } catch (InterruptedException ex) {
             Logger.getLogger(USMTextureManager.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_addboardsToBmpButtonActionPerformed
 
-    private void process(String action) throws InterruptedException {
-        this.kernel.setAction(action);
-        this.kernel.a
-        this.kernel.join();
+    void process(String action) throws InterruptedException {
+      this.log("Starting process. Please wait...");
+      this.enableUi(false);
+       this.kernel.setAction(action);
+       ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+
+                  
+Thread splashThread = new Thread(new Runnable() {
+            public void run() {
+kernel.run();
+log("Done");
+enableUi(true);
+            }
+        });
+
+executor.schedule(splashThread, 0, TimeUnit.MILLISECONDS);
+
     }
     
-    private void log(String msg) {
+    void log(String msg) {
         this.consoleBox.append(msg + "\n");
     }
     
-    private void enableUi(Boolean status) {
+    void enableUi(Boolean status) {
         this.addboardsToBmpButton.setEnabled(status);
         this.addboardsToSprButton.setEnabled(status);
     }
@@ -172,11 +182,11 @@ public class USMTextureManager extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel addboardsLabel;
     private javax.swing.JButton addboardsToBmpButton;
     private javax.swing.JButton addboardsToSprButton;
     private javax.swing.JTextArea consoleBox;
     private javax.swing.JButton exitButton;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextArea jTextArea1;

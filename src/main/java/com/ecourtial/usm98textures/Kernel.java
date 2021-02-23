@@ -14,7 +14,7 @@ public class Kernel extends Thread {
         
         private AddboardService addboardService;
         private String action;
-        
+
         private AddboardService getService() throws IOException, Exception {
             
             if (this.addboardService == null) {
@@ -35,17 +35,19 @@ public class Kernel extends Thread {
         
         @Override
         public void run(){
-       System.out.println("MyThread running");
+
+       for (int a = 0; a < 150000; a++) {
+           System.out.println("MyThread running #" + a);
+           
+       }
     }
         
-
-        
-    public void toBmp() throws Exception
+    private void toBmp() throws Exception
     {
         this.getService().convertToBmp();
     }
     
-    public void toSpr() throws Exception
+    private void toSpr() throws Exception
     {
         this.getService().convertToSpr();
     }
