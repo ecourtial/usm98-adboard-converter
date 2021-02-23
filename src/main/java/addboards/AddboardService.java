@@ -1,6 +1,6 @@
 package addboards;
 
-import com.ecourtial.usm98textures.main;
+import com.ecourtial.usm98textures.Kernel;
 import com.ecourtial.usm98textures.tools.BinaryService;
 import com.ecourtial.usm98textures.tools.PaletteExtractor;
 import java.io.IOException;
@@ -30,7 +30,7 @@ public class AddboardService {
 
     public void convertToBmp() throws IOException {
         this.addBoardToBmpConverter.convert(this.paletteExtractor.extractForConversionToBmp(),
-                this.binaryExtractor.getFileContent(main.AddboardPath),
+                this.binaryExtractor.getFileContent(Kernel.AddboardPath),
                 AddboardService.addboardsImageWidth,
                 AddboardService.addboardsImageHeight,
                 AddboardService.outputBmpFilePath
