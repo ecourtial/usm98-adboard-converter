@@ -14,7 +14,7 @@ public class BinaryService {
         return fileContent;
     }
 
-    public void writeHexString(String filePath, String value, int position) throws IOException {
+    public void writeHexString(String filePath, String value) throws IOException {
         FileOutputStream fos = new FileOutputStream(filePath);
         fos.write(this.hexStringToByteArray(value));
 

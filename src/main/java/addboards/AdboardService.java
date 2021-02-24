@@ -42,8 +42,7 @@ public class AdboardService {
                 AdboardService.OUTPUT_BMP_FILE_PATH,
                 AdboardService.ADDBOARDS_IMAGE_WIDTH,
                 AdboardService.ADDBOARDS_IMAGE_HEIGHT
-            ),
-            0
+            )
         );
     }
 }

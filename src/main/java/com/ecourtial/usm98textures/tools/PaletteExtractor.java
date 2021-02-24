@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class PaletteExtractor {
-    private String PalettePath;
+    private final String PalettePath;
     private Map < String, PaletteColor > ToBmpColoursMap;
     private Map < String, String > ToSprColoursMap;
 
