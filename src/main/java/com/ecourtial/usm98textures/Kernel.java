@@ -1,7 +1,7 @@
 package com.ecourtial.usm98textures;
 
-import addboards.AdboardService;
-import addboards.AdboardToBmpConverter;
+import addboards.AdboardsService;
+import addboards.AdboardsToBmpConverter;
 import addboards.AdboardToSprConverter;
 import com.ecourtial.usm98textures.tools.BinaryService;
 import com.ecourtial.usm98textures.tools.PaletteExtractor;
@@ -11,7 +11,7 @@ public class Kernel extends Thread {
 
     private static final String PALETTE_PATH = "USM-Colour-Palette.csv";
 
-    private AdboardService addboardService;
+    private AdboardsService addboardService;
     private String action = "noDefinedActionSofar";
     private final USMTextureManager ui;
 
@@ -48,12 +48,12 @@ public class Kernel extends Thread {
     }
 
     // Used to generate the service, once, with DI.
-    private AdboardService getAddboardsService() throws IOException, Exception {
+    private AdboardsService getAddboardsService() throws IOException, Exception {
 
         if (this.addboardService == null) {
-            this.addboardService = new AdboardService(
+            this.addboardService = new AdboardsService(
                 new PaletteExtractor(Kernel.PALETTE_PATH),
-                new AdboardToBmpConverter(),
+                new AdboardsToBmpConverter(),
                 new AdboardToSprConverter(),
                 new BinaryService()
             );

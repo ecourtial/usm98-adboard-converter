@@ -4,20 +4,20 @@ import com.ecourtial.usm98textures.tools.BinaryService;
 import com.ecourtial.usm98textures.tools.PaletteExtractor;
 import java.io.IOException;
 
-public class AdboardService {
+public class AdboardsService {
     private static final String OUTPUT_BMP_FILE_PATH = "AdBoards.bmp";
     private static final String OUTPUT_SPR_FILE_PATH = "Adboards.spr";
     private static final int ADDBOARDS_IMAGE_WIDTH = 85;
     private static final int ADDBOARDS_IMAGE_HEIGHT = 2244;
 
     private final PaletteExtractor paletteExtractor;
-    private final AdboardToBmpConverter addBoardToBmpConverter;
+    private final AdboardsToBmpConverter addBoardToBmpConverter;
     private final AdboardToSprConverter addBoardToSprConverter;
     private final BinaryService binaryExtractor;
 
-    public AdboardService(
+    public AdboardsService(
         PaletteExtractor paletteExtractor,
-        AdboardToBmpConverter addBoartToBmpConverter,
+        AdboardsToBmpConverter addBoartToBmpConverter,
         AdboardToSprConverter addBoardToSprConverter,
         BinaryService binaryExtractor
     ) {
@@ -29,19 +29,19 @@ public class AdboardService {
 
     public void convertToBmp() throws IOException {
         this.addBoardToBmpConverter.convert(this.paletteExtractor.extractForConversionToBmp(),
-            this.binaryExtractor.getFileContent(AdboardService.OUTPUT_SPR_FILE_PATH),
-            AdboardService.ADDBOARDS_IMAGE_WIDTH,
-            AdboardService.ADDBOARDS_IMAGE_HEIGHT,
-            AdboardService.OUTPUT_BMP_FILE_PATH
+            this.binaryExtractor.getFileContent(AdboardsService.OUTPUT_SPR_FILE_PATH),
+            AdboardsService.ADDBOARDS_IMAGE_WIDTH,
+            AdboardsService.ADDBOARDS_IMAGE_HEIGHT,
+            AdboardsService.OUTPUT_BMP_FILE_PATH
         );
     }
 
     public void convertToSpr() throws IOException, Exception {
-        this.binaryExtractor.writeHexString(AdboardService.OUTPUT_SPR_FILE_PATH,
+        this.binaryExtractor.writeHexString(AdboardsService.OUTPUT_SPR_FILE_PATH,
             this.addBoardToSprConverter.convert(this.paletteExtractor.extractForConversionToSpr(),
-                AdboardService.OUTPUT_BMP_FILE_PATH,
-                AdboardService.ADDBOARDS_IMAGE_WIDTH,
-                AdboardService.ADDBOARDS_IMAGE_HEIGHT
+                AdboardsService.OUTPUT_BMP_FILE_PATH,
+                AdboardsService.ADDBOARDS_IMAGE_WIDTH,
+                AdboardsService.ADDBOARDS_IMAGE_HEIGHT
             )
         );
     }

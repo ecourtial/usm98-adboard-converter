@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.util.Map;
 import javax.imageio.ImageIO;
 
-public class AdboardToBmpConverter {
+public class AdboardsToBmpConverter {
 
     public void convert(Map < String, PaletteColor > coloursMap, byte[] fileContent, int Width, int Height, String outputPath) throws IOException {
 

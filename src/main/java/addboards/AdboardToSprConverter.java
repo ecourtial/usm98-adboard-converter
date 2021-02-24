@@ -11,12 +11,12 @@ public class AdboardToSprConverter {
 
     String convert(
         Map < String, String > coloursMap,
-        String outputBmpFilePath,
+        String bmpFilePath,
         int width,
         int height
 
     ) throws IOException, Exception {
-        File file = new File(outputBmpFilePath);
+        File file = new File(bmpFilePath);
         BufferedImage image = ImageIO.read(file);
 
         if (image.getWidth() != width || image.getHeight() != height) {
