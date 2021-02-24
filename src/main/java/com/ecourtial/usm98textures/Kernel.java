@@ -1,8 +1,8 @@
 package com.ecourtial.usm98textures;
 
-import addboards.AddboardService;
-import addboards.AddboardToBmpConverter;
-import addboards.AddboardToSprConverter;
+import addboards.AdboardService;
+import addboards.AdboardToBmpConverter;
+import addboards.AdboardToSprConverter;
 import com.ecourtial.usm98textures.tools.BinaryService;
 import com.ecourtial.usm98textures.tools.PaletteExtractor;
 import java.io.IOException;
@@ -10,10 +10,14 @@ import java.io.IOException;
 public class Kernel extends Thread {
 
     private static final String PALETTE_PATH = "USM-Colour-Palette.csv";
-    public static final String ADDBOARD_PATH = "ADBOARDS.SPR";
 
-    private AddboardService addboardService;
+    private AdboardService addboardService;
     private String action = "noDefinedActionSofar";
+    private final USMTextureManager ui;
+
+    Kernel(USMTextureManager userInterface) {
+        this.ui = userInterface;
+    }
 
     // Set the action to run in the thread
     public void setAction(String action) {
@@ -22,21 +26,35 @@ public class Kernel extends Thread {
 
     @Override
     public void run() {
-        switch (this.action) {
-            case "addboardsToBmp": this.getAddboardsService().convertToBmp(); break;
-            case "addboardsToSpr": this.getAddboardsService().convertToSpr(); break;
-            default: throw new Exception("Unknown action: '" + this.action +  "'");
+        try {
+            switch (this.action) {
+                case "addboardsToBmp":
+                    this.getAddboardsService().convertToBmp();
+                    break;
+                case "addboardsToSpr":
+                    this.getAddboardsService().convertToSpr();
+                    break;
+                default:
+                    throw new Exception("Unknown action: '" + this.action + "'");
+            }
+
+            this.ui.log("Done!");
+        } catch (Throwable throwable) {
+            this.ui.log("An error occured:");
+            this.ui.log(throwable.getMessage());
         }
+
+        this.ui.enableUi(true);
     }
-    
+
     // Used to generate the service, once, with DI.
-    private AddboardService getAddboardsService() throws IOException, Exception {
+    private AdboardService getAddboardsService() throws IOException, Exception {
 
         if (this.addboardService == null) {
-            this.addboardService = new AddboardService(
+            this.addboardService = new AdboardService(
                 new PaletteExtractor(Kernel.PALETTE_PATH),
-                new AddboardToBmpConverter(),
-                new AddboardToSprConverter(),
+                new AdboardToBmpConverter(),
+                new AdboardToSprConverter(),
                 new BinaryService()
             );
         }

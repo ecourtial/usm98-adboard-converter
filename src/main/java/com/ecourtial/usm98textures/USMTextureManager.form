@@ -20,6 +20,7 @@
   </NonVisualComponents>
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="3"/>
+    <Property name="title" type="java.lang.String" value="USM98 Textures Manager 1.0"/>
   </Properties>
   <SyntheticProperties>
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
@@ -80,7 +81,7 @@
   <SubComponents>
     <Component class="javax.swing.JLabel" name="addboardsLabel">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Addboards"/>
+        <Property name="text" type="java.lang.String" value="Adboards"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JButton" name="addboardsToBmpButton">

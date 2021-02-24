@@ -23,5 +23,4 @@ public class PaletteColor {
     public int getB() {
         return b;
     }
-
 }

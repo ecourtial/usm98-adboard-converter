@@ -9,15 +9,11 @@ import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import static javax.swing.JOptionPane.showMessageDialog;
 
 public class USMTextureManager extends javax.swing.JFrame {
-
-    Kernel kernel;
-
     /**
      * Creates new form USMTextureManager
      */
     public USMTextureManager() {
         initComponents();
-        this.kernel = new Kernel();
     }
 
     /**
@@ -43,8 +39,9 @@ public class USMTextureManager extends javax.swing.JFrame {
         jScrollPane1.setViewportView(jTextArea1);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("USM98 Textures Manager 1.0");
 
-        addboardsLabel.setText("Addboards");
+        addboardsLabel.setText("Adboards");
 
         addboardsToBmpButton.setText("Export to BMP");
         addboardsToBmpButton.addActionListener(new java.awt.event.ActionListener() {
@@ -125,7 +122,7 @@ public class USMTextureManager extends javax.swing.JFrame {
     // Click when converting addboards to SPR
     private void addboardsToSprButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addboardsToSprButtonActionPerformed
         try {
-            this.process("addboardsToSpr", "This conversion usually take around one minute.");
+            this.process("addboardsToSpr", "This conversion usually takes around one minute.");
         } catch (InterruptedException ex) {
             Logger.getLogger(USMTextureManager.class.getName()).log(Level.SEVERE, null, ex);
             this.showErrorBox("Impossible to perform operation: " + ex.getMessage());
@@ -137,23 +134,22 @@ public class USMTextureManager extends javax.swing.JFrame {
         this.log("Starting process...");
         this.log(message);
         this.enableUi(false);
-        this.kernel.setAction(action);
+        Kernel kernel = new Kernel(this);
+        kernel.setAction(action);
         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
 
         Thread kernelThread = new Thread(() -> {
             kernel.start();
-            log("Done!");
-            enableUi(true);
         });
 
         executor.schedule(kernelThread, 0, TimeUnit.MILLISECONDS);
     }
 
-    private void log(String msg) {
+    public void log(String msg) {
         this.consoleBox.append(msg + "\n");
     }
 
-    private void enableUi(Boolean status) {
+    public void enableUi(Boolean status) {
         this.addboardsToBmpButton.setEnabled(status);
         this.addboardsToSprButton.setEnabled(status);
     }

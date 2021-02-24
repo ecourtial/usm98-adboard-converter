@@ -9,9 +9,9 @@ import java.io.IOException;
 import java.util.Map;
 import javax.imageio.ImageIO;
 
-public class AddboardToBmpConverter {
+public class AdboardToBmpConverter {
 
-    public void convert(Map<String, PaletteColor> coloursMap, byte[] fileContent, int Width, int Height, String outputPath) throws IOException {
+    public void convert(Map < String, PaletteColor > coloursMap, byte[] fileContent, int Width, int Height, String outputPath) throws IOException {
 
         final BufferedImage img = new BufferedImage(Width, Height, BufferedImage.TYPE_INT_RGB);
         int x = 0;
