@@ -7,7 +7,7 @@
 
 ## Description :notebook:
 
-This small application is designed to help you to edit the texture in the game _Ultimate Soccer Manager 98_. It has been tested with USM98-99 (aka the USM98 2.0).
+This small application is designed to help you to edit the textures in the game _Ultimate Soccer Manager 98_. It has been tested with USM98-99 (aka the USM98 2.0).
 
 ## Utilization
 
@@ -21,7 +21,7 @@ This small application is designed to help you to edit the texture in the game _
 * Maven
 * JUnit
 
-# Changelog 
-## 1.0
+## Changelog 
+### 1.0
 * Feature to export and import adboards.
 * Includes the color palette on CSV format.
