@@ -19,26 +19,25 @@ commands:
       #      apt-get update && apt-get install --no-install-recommends -y git curl wget
       - checkout
 
-  javaversion:
+  junit-cmd:
     steps:
       - checkout-alpine
       - attach_workspace:
           at: .
       - run:
           name: javaversion
-          #command: java -version && export DISPLAY=:0.0 && echo "stating Junit" && junit
           command: mvn package && mvn test
 
 
 ## JOBS
 jobs:
-  showjavaversion:
+  JUnit:
     executor: java
     steps:
-      - javaversion
+      - junit-cmd
 
 ## WORKFLOWS
 workflows:
   Code quality Java:
     jobs:
-      - showjavaversion
+      - JUnit
