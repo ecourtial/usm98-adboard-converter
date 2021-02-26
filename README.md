@@ -17,9 +17,11 @@ This small application is designed to help you to edit the texture in the game _
 ## Stack :light_rail:
 
 * Build with Java Runtime Environment 1.8 (not tested with lower versions).
+* Swing
 * Maven
 * JUnit
 
 # Changelog 
 ## 1.0
 * Feature to export and import adboards.
+* Includes the color palette on CSV format.
