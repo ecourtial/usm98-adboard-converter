@@ -4,5 +4,5 @@
 
 
 Stack :
-* Build with Java Runtime Environment 1.8 (not tested with lower versions).
+* Build with Java Runtime Environment 1.7 (not tested with lower versions).
 * JUnit

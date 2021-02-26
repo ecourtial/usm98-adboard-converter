@@ -4,7 +4,7 @@ version: '2.1'
 executors:
   java:
     docker:
-      - image: openjdk:7
+      - image: maven:3.5.3-jdk-8-alpine
     working_directory: ~/repo
 
 ## COMMANDS
@@ -13,10 +13,10 @@ commands:
   checkout-alpine:
     description: Install requirements for checkout
     steps:
-      - run:
-          name: "Install requirements for checkout"
-          command: |
-            apt-get update && apt-get install --no-install-recommends -y git curl wget
+      #- run:
+      #    name: "Install requirements for checkout"
+      #    command: |
+      #      apt-get update && apt-get install --no-install-recommends -y git curl wget
       - checkout
 
   javaversion:
@@ -26,10 +26,12 @@ commands:
           at: .
       - run:
           name: javaversion
-          command: java -version
+          #command: java -version && export DISPLAY=:0.0 && echo "stating Junit" && junit
+          command: mvn package && mvn test
 
 
 ## JOBS
+jobs:
   showjavaversion:
     executor: java
     steps:
@@ -37,6 +39,6 @@ commands:
 
 ## WORKFLOWS
 workflows:
-  Code quality PHP 7.4:
+  Code quality Java:
     jobs:
       - showjavaversion
