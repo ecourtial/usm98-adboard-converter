@@ -13,10 +13,6 @@ commands:
   checkout-alpine:
     description: Install requirements for checkout
     steps:
-      #- run:
-      #    name: "Install requirements for checkout"
-      #    command: |
-      #      apt-get update && apt-get install --no-install-recommends -y git curl wget
       - checkout
 
   junit-cmd:
