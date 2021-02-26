@@ -1,6 +1,7 @@
 package addboards;
 
-import com.ecourtial.usm98textures.tools.BinaryService;
+import adboards.AdboardToSprConverter;
+import tools.BinaryService;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;

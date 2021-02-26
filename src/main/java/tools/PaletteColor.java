@@ -1,4 +1,4 @@
-package com.ecourtial.usm98textures.tools;
+package tools;
 
 public class PaletteColor {
 

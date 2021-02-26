@@ -1,7 +1,8 @@
 package addboards;
 
-import com.ecourtial.usm98textures.tools.PaletteColor;
-import com.ecourtial.usm98textures.tools.PaletteExtractor;
+import adboards.AdboardsToBmpConverter;
+import tools.PaletteColor;
+import tools.PaletteExtractor;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;

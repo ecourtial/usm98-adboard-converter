@@ -1,5 +1,6 @@
 package com.ecourtial.usm98textures.tools;
 
+import tools.PaletteColor;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 

@@ -1,10 +1,10 @@
-package com.ecourtial.usm98textures;
+package main;
 
-import addboards.AdboardsService;
-import addboards.AdboardsToBmpConverter;
-import addboards.AdboardToSprConverter;
-import com.ecourtial.usm98textures.tools.BinaryService;
-import com.ecourtial.usm98textures.tools.PaletteExtractor;
+import adboards.AdboardsService;
+import adboards.AdboardsToBmpConverter;
+import adboards.AdboardToSprConverter;
+import tools.BinaryService;
+import tools.PaletteExtractor;
 import java.io.IOException;
 
 public class Kernel extends Thread {

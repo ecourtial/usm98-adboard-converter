@@ -1,6 +1,6 @@
-package addboards;
+package adboards;
 
-import com.ecourtial.usm98textures.tools.PaletteColor;
+import tools.PaletteColor;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;

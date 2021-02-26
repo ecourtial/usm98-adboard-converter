@@ -1,4 +1,4 @@
-package addboards;
+package adboards;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
@@ -9,7 +9,7 @@ import javax.imageio.ImageIO;
 
 public class AdboardToSprConverter {
 
-    String convert(
+    public String convert(
         Map < String, String > coloursMap,
         String bmpFilePath,
         int width,

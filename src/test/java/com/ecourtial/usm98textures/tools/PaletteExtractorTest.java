@@ -1,5 +1,7 @@
 package com.ecourtial.usm98textures.tools;
 
+import tools.PaletteExtractor;
+import tools.PaletteColor;
 import java.util.HashMap;
 import java.util.Map;
 import org.junit.jupiter.api.Test;

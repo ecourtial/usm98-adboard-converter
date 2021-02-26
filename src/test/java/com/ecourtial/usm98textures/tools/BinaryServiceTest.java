@@ -1,5 +1,6 @@
 package com.ecourtial.usm98textures.tools;
 
+import tools.BinaryService;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
