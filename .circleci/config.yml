@@ -1,0 +1,39 @@
+version: '2.1'
+
+## EXECUTORS
+executors:
+  java:
+    docker:
+      - image: maven:3.5.3-jdk-8-alpine
+    working_directory: ~/repo
+
+## COMMANDS
+commands:
+
+  checkout-alpine:
+    description: Install requirements for checkout
+    steps:
+      - checkout
+
+  junit-cmd:
+    steps:
+      - checkout-alpine
+      - attach_workspace:
+          at: .
+      - run:
+          name: javaversion
+          command: mvn package && mvn test
+
+
+## JOBS
+jobs:
+  JUnit:
+    executor: java
+    steps:
+      - junit-cmd
+
+## WORKFLOWS
+workflows:
+  Code quality Java:
+    jobs:
+      - JUnit

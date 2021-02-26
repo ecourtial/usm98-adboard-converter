@@ -1,0 +1,7 @@
+/target/
+nbactions.xml
+/nbproject/
+src/test/assets/basic-text-output.txt
+src/test/assets/outputBmpTest.bmp
+src/test/assets/outputBmpTest2.bmp
+
