@@ -1,0 +1,39 @@
+USM98 Textures Manager
+
+1) Description
+
+This small application is designed to help you to edit various textures in the game.
+So far, you can edit:
+- Adboards
+
+Further features will be added over the time
+
+Special thanks to Dane Smallbone who took a lot of time to create this color palette and understood how
+Adboards are stored.
+
+A CSV palette is given containing the RGB values that are used by the game. You can used a fancy software
+to edit the BMP files, but the old fashioned MS Paint will perfectly do the job.
+
+2) Installation
+
+You need Java installed on your computer (java.com/en/download).
+Then, move all the files wherever you want, in any specific folder of your computer.
+Personally, I have a "USM98-Tools" directory  on my Desktop where I put all the USM98 tools I use, for instance
+the USM Tweaker.
+
+You need to have both the files USM98-Textures-1.0.jar and USM-Colour-Palette.csv together in the same folder.
+
+Note: I developed this application and tested it with USM98-99 (aka USM98 v2). I have no idea if it works
+with the previous version.
+
+3) Utilization
+
+Double click on the M98-Textures-1.0.jar fil. The application will start.
+
+3.1) Adboards
+
+To export the adboards into a BMP file, just copy the Adboards.spr file from the game folder into the folder
+you put the textures manager. Then click on the corresponding button to export it into a BMP file.
+
+To do the opposite, you obvisouly  need to have your BMP file (Adboards.bmp) in the folder. Just click in the other
+button to export it into a SPR file and copy the new file into the USM folder.
