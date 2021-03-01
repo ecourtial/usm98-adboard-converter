@@ -5,6 +5,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.ImageIcon;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import static javax.swing.JOptionPane.showMessageDialog;
 
@@ -14,6 +15,8 @@ public class USMTextureManager extends javax.swing.JFrame {
      */
     public USMTextureManager() {
         initComponents();
+      ImageIcon img = new ImageIcon("mainIcon.png");
+      this.setIconImage(img.getImage());
     }
 
     /**
