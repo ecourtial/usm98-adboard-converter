@@ -11,7 +11,7 @@ This small application is designed to help you to edit the textures in the game 
 
 ## Utilization
 
-* If you just want to download and use the application, download it from here.
+* If you just want to download and use the application, download it from [here](http://usm.dynamic-mess.com/downloads/tools/).
 * For contributing, just fork the repo and clone your repo locally.
 
 ## Stack :light_rail:
