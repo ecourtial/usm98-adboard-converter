@@ -183,7 +183,12 @@ public class USMTextureManager extends javax.swing.JFrame {
 
     // Convert a pitch to SPR
     private void pitchToSprButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pitchToSprButtonActionPerformed
-        
+        int selectedIndex = this.PitchList.getSelectedIndex();
+        if (selectedIndex == -1) {
+            this.showErrorBox("You must select a pitch to be converted!");
+            return;
+        }
+        this.triggerActionToKernel("pitchToSpr", "This conversion usually takes a few seconds.", selectedIndex);
     }//GEN-LAST:event_pitchToSprButtonActionPerformed
 
     private void triggerActionToKernel(String action, String message,  int param1) {

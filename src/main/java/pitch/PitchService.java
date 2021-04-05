@@ -10,15 +10,18 @@ public class PitchService {
 
     private final PaletteExtractor paletteExtractor;
     private final PitchToBmpConverter pitchToBmpConverter;
+    private final PitchToSprConverter pitchToSprConverter;
     private final BinaryService binaryExtractor;
 
     public PitchService(
         PaletteExtractor paletteExtractor,
         PitchToBmpConverter pitchToBmpConverter,
+        PitchToSprConverter pitchToSprConverter,
         BinaryService binaryExtractor
     ) {
         this.paletteExtractor = paletteExtractor;
         this.pitchToBmpConverter = pitchToBmpConverter;
+        this.pitchToSprConverter = pitchToSprConverter;
         this.binaryExtractor = binaryExtractor;
     }
 
@@ -32,22 +35,52 @@ public class PitchService {
             fileName + ".bmp"
         );
     }
-    
+
+    public void convertToSpr(int key) throws IOException, Exception {
+        String fileName = this.getFileCorrespondance(key);
+        this.binaryExtractor.writeHexString(
+            fileName + ".spr",
+            this.pitchToSprConverter.convert(
+                this.paletteExtractor.extractForConversionToSpr(),
+                fileName + ".bmp",
+                PitchService.PITCH_IMAGE_WIDTH,
+                PitchService.PITCH_IMAGE_HEIGHT
+            )
+        );
+    }
+
     private String getFileCorrespondance(int index) throws Exception {
         String value = "";
-        
-        switch(index) {
-            case 0: value = "ln"; break;
-            case 1: value = "rn"; break;
-            case 2: value = "ls"; break;
-            case 3: value = "rs"; break;
-            case 4: value = "lw"; break;
-            case 5: value = "rw"; break;
-            case 6: value = "lm"; break;
-            case 7: value = "rm"; break;
-            default: throw new Exception("Unknown index for pitch correpondance: " + index + "!");
+
+        switch (index) {
+            case 0:
+                value = "ln";
+                break;
+            case 1:
+                value = "rn";
+                break;
+            case 2:
+                value = "ls";
+                break;
+            case 3:
+                value = "rs";
+                break;
+            case 4:
+                value = "lw";
+                break;
+            case 5:
+                value = "rw";
+                break;
+            case 6:
+                value = "lm";
+                break;
+            case 7:
+                value = "rm";
+                break;
+            default:
+                throw new Exception("Unknown index for pitch correpondance: " + index + "!");
         }
-        
+
         return "Pitch_" + value;
     }
 }

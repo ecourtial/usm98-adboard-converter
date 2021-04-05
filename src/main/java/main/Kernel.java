@@ -8,6 +8,7 @@ import tools.PaletteExtractor;
 import java.io.IOException;
 import pitch.PitchService;
 import pitch.PitchToBmpConverter;
+import pitch.PitchToSprConverter;
 
 public class Kernel extends Thread {
 
@@ -47,12 +48,15 @@ public class Kernel extends Thread {
                case "pitchToBmp":
                     this.getPitchService().convertToBmp(this.Param1FromGui);
                     break;
+               case "pitchToSpr":
+                    this.getPitchService().convertToSpr(this.Param1FromGui);
+                    break;
                 default:
                     throw new Exception("Unknown action: '" + this.action + "'");
             }
 
             this.ui.log("Done!");
-        } catch (Throwable throwable) {
+        } catch (Exception throwable) {
             this.ui.log("An error occured:");
             this.ui.log(throwable.getMessage());
         }
@@ -81,6 +85,7 @@ public class Kernel extends Thread {
             this.pitchService = new PitchService(
                new PaletteExtractor(Kernel.PALETTE_PATH),
                new PitchToBmpConverter(),
+               new PitchToSprConverter(),
                new BinaryService()     
             );
         }
