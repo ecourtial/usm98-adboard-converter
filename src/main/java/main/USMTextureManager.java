@@ -36,13 +36,18 @@ public class USMTextureManager extends javax.swing.JFrame {
         exitButton = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         consoleBox = new javax.swing.JTextArea();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        PitchList = new javax.swing.JList<>();
+        PitchLabel = new javax.swing.JLabel();
+        pitchToBmpButton = new javax.swing.JButton();
+        pitchToSprButton = new javax.swing.JButton();
 
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
         jScrollPane1.setViewportView(jTextArea1);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("USM98 Textures Manager 1.0");
+        setTitle("USM98 Textures Manager 1.1");
 
         addboardsLabel.setText("Adboards");
 
@@ -72,6 +77,29 @@ public class USMTextureManager extends javax.swing.JFrame {
         consoleBox.setRows(5);
         jScrollPane2.setViewportView(consoleBox);
 
+        PitchList.setModel(new javax.swing.AbstractListModel<String>() {
+            String[] strings = { "Normal left", "Normal right", "Snow left", "Snow right", "Winter left", "Winter right", "Wet left", "Wet right" };
+            public int getSize() { return strings.length; }
+            public String getElementAt(int i) { return strings[i]; }
+        });
+        jScrollPane3.setViewportView(PitchList);
+
+        PitchLabel.setText("Pitch");
+
+        pitchToBmpButton.setText("Export to BMP");
+        pitchToBmpButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                pitchToBmpButtonActionPerformed(evt);
+            }
+        });
+
+        pitchToSprButton.setText("Export to SPR");
+        pitchToSprButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                pitchToSprButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -79,14 +107,24 @@ public class USMTextureManager extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(15, 15, 15)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 423, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(exitButton)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(addboardsToBmpButton)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(addboardsToSprButton))
-                        .addComponent(addboardsLabel)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 423, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(addboardsLabel)
+                            .addComponent(PitchLabel)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(jScrollPane3)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(pitchToBmpButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(pitchToSprButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(addboardsToBmpButton)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(addboardsToSprButton))))
+                        .addGap(158, 158, 158)))
                 .addContainerGap(15, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -98,10 +136,20 @@ public class USMTextureManager extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(addboardsToBmpButton)
                     .addComponent(addboardsToSprButton))
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 47, Short.MAX_VALUE)
-                .addComponent(exitButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(PitchLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 11, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(33, 33, 33)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(exitButton))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(pitchToBmpButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(pitchToSprButton)))
                 .addContainerGap())
         );
 
@@ -110,35 +158,52 @@ public class USMTextureManager extends javax.swing.JFrame {
 
     // Click when converting addboards to BMP
     private void addboardsToBmpButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addboardsToBmpButtonActionPerformed
-        try {
-            this.process("addboardsToBmp", "This conversion usually takes a few seconds.");
-        } catch (InterruptedException ex) {
-            Logger.getLogger(USMTextureManager.class.getName()).log(Level.SEVERE, null, ex);
-            this.showErrorBox("Impossible to perform operation: " + ex.getMessage());
-        }
+        this.triggerActionToKernel("addboardsToBmp", "This conversion usually takes a few seconds.", 0);
     }//GEN-LAST:event_addboardsToBmpButtonActionPerformed
 
+    // Exit the app
     private void exitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitButtonActionPerformed
         System.exit(0);
     }//GEN-LAST:event_exitButtonActionPerformed
 
     // Click when converting addboards to SPR
     private void addboardsToSprButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addboardsToSprButtonActionPerformed
+        this.triggerActionToKernel("addboardsToSpr", "This conversion usually takes around one minute.", 0);
+    }//GEN-LAST:event_addboardsToSprButtonActionPerformed
+
+    // Convert a pitch to BMP
+    private void pitchToBmpButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pitchToBmpButtonActionPerformed
+        int selectedIndex = this.PitchList.getSelectedIndex();
+        if (selectedIndex == -1) {
+            this.showErrorBox("You must select a pitch to be converted!");
+            return;
+        }
+        this.triggerActionToKernel("pitchToBmp", "This conversion usually takes a few seconds.", selectedIndex);
+    }//GEN-LAST:event_pitchToBmpButtonActionPerformed
+
+    // Convert a pitch to SPR
+    private void pitchToSprButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pitchToSprButtonActionPerformed
+        
+    }//GEN-LAST:event_pitchToSprButtonActionPerformed
+
+    private void triggerActionToKernel(String action, String message,  int param1) {
         try {
-            this.process("addboardsToSpr", "This conversion usually takes around one minute.");
+            this.process(action, message, param1);
         } catch (InterruptedException ex) {
             Logger.getLogger(USMTextureManager.class.getName()).log(Level.SEVERE, null, ex);
             this.showErrorBox("Impossible to perform operation: " + ex.getMessage());
         }
-    }//GEN-LAST:event_addboardsToSprButtonActionPerformed
-
+    }
+    
     // Controlling the whole process in a thread
-    void process(String action, String message) throws InterruptedException {
+    void process(String action, String message, int param1) throws InterruptedException {
+        this.consoleBox.setText("");
         this.log("Starting process...");
         this.log(message);
         this.enableUi(false);
         Kernel kernel = new Kernel(this);
         kernel.setAction(action);
+        kernel.setParam1(param1);
         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
 
         Thread kernelThread = new Thread(() -> {
@@ -155,10 +220,12 @@ public class USMTextureManager extends javax.swing.JFrame {
     public void enableUi(Boolean status) {
         this.addboardsToBmpButton.setEnabled(status);
         this.addboardsToSprButton.setEnabled(status);
+        this.pitchToBmpButton.setEnabled(status);
+        this.pitchToSprButton.setEnabled(status);
     }
 
     private void showErrorBox(String msg) {
-        showMessageDialog(null, "Message", msg, ERROR_MESSAGE);
+        showMessageDialog(this,  msg, "Message", ERROR_MESSAGE);
     }
     
     /**
@@ -197,6 +264,8 @@ public class USMTextureManager extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel PitchLabel;
+    private javax.swing.JList<String> PitchList;
     private javax.swing.JLabel addboardsLabel;
     private javax.swing.JButton addboardsToBmpButton;
     private javax.swing.JButton addboardsToSprButton;
@@ -204,6 +273,9 @@ public class USMTextureManager extends javax.swing.JFrame {
     private javax.swing.JButton exitButton;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JButton pitchToBmpButton;
+    private javax.swing.JButton pitchToSprButton;
     // End of variables declaration//GEN-END:variables
 }
