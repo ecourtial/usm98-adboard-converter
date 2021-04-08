@@ -13,6 +13,8 @@ public class PitchToSprConverter {
     private Map < String, String > coloursMap;
     private String dominantColor1;
     private String dominantColor2;
+    private int width;
+    private int height;
     
     public String convert(
         Map < String, String > coloursMap,
@@ -24,6 +26,8 @@ public class PitchToSprConverter {
         File file = new File(bmpFilePath);
         this.image = ImageIO.read(file);
         this.coloursMap = coloursMap;
+        this.width = width;
+        this.height = height;
 
         if (image.getWidth() != width || image.getHeight() != height) {
             throw new Exception("Image must have a width of  " + width + " pixels and height must be of  " + height + "!");
@@ -33,20 +37,28 @@ public class PitchToSprConverter {
             throw new Exception("Image must be a valid BMP file!");
         }
 
-        this.extractDominantColors();
+        // Init: extract dominant colors and split in chunks of the size of each line (670 pixels)
+        String[][] chunks = this.parseFile();
+        String hexStringToOutPut = this.dominantColor1 + this.dominantColor2;
         
-        
-        
-        
+
         
         
         return "";
     }
     
-    private void extractDominantColors() {
+    /**
+     * This method has two objective while parsing the file:
+     * - extract the two dominant colors;
+     * - split the file in chunks of the size of the image width
+     */
+    private String[][] parseFile() {
         Map < String, ValueCounter > colorsIndex = new HashMap < > ();
-        
+        String[][] chunks = new String[this.height][this.width];
+
+        // Parse the file
           for (int y = 0; y < this.image.getHeight(); y++) {
+            String[] chunk = new String[this.width];
             for (int x = 0; x < this.image.getWidth(); x++) {
                 Color color = new Color(this.image.getRGB(x, y), true);
                 String colorString = color.getRed() + "-" + color.getGreen() + "-" + color.getBlue();
@@ -59,7 +71,11 @@ public class PitchToSprConverter {
                     tmpCounter.increment();
                     colorsIndex.put(colorString, tmpCounter);
                 }
+                
+                chunk[x] = this.getColourFromPalette(colorString);
             }
+            
+            chunks[y] = chunk;
         }
 
           ValueCounter biggestOne = new ValueCounter();
@@ -81,6 +97,8 @@ public class PitchToSprConverter {
           
           this.dominantColor1 = this.getColourFromPalette(biggestOne.getValue());
           this.dominantColor2 = this.getColourFromPalette(biggestTwo.getValue());
+          
+          return chunks;
     }
     
     private String getColourFromPalette(String colorString) {
