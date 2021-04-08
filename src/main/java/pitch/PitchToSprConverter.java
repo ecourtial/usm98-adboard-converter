@@ -41,10 +41,74 @@ public class PitchToSprConverter {
         String[][] chunks = this.parseFile();
         String hexStringToOutPut = this.dominantColor1 + this.dominantColor2;
         
+       // Now we create sequences (repeated colors or sequences of single colors)
+       boolean hasSwitched = false;
+       Map<String, Object> sequences = new HashMap<>();
+       Map < String, String > currentSequence = new HashMap <  >();
+       
+        String previousColor = "";
 
+        for (String[] chunk : chunks) {
+            for (String currentColor : chunk) {
+                if (previousColor == null || !previousColor.equals(currentColor)) {
+                    if (hasSwitched) {
+                        currentSequence = this.handleSequence(sequences, currentSequence);
+                        hasSwitched = false;
+                    }
+                    this.addEntryToSequence(currentColor, currentSequence);
+                } else {
+                    if (hasSwitched == false) {
+                        int lastIndex = currentSequence.size() - 1;
+                        String lastIndexString = String.valueOf(lastIndex);
+                        if (lastIndex > 0 && currentSequence.get(lastIndexString).equals(currentColor) ) {
+                            currentSequence.remove(lastIndexString);
+                        }
+                        
+                        this.handleSequence(sequences, currentSequence);
+                        hasSwitched         = true;
+                        currentSequence.put("-1", "whatever");
+                        this.addEntryToSequence(currentColor, currentSequence);
+                    }
+                    this.addEntryToSequence(currentColor, currentSequence);
+                    
+                    // For dominant, max repetition = 63
+                    if (
+                            ((currentColor.equals(this.dominantColor1) || currentColor.equals(this.dominantColor2)) && currentSequence.size() == 63)
+                            || ((!currentColor.equals(this.dominantColor1) && !currentColor.equals(this.dominantColor2)) && currentSequence.size() ==  16)
+                            ) {
+                        this.handleSequence(sequences, currentSequence);
+                        currentColor = null;
+                    }
+                }
+                
+                previousColor = currentColor;
+            }
+            this.handleSequence(sequences, currentSequence);
+        }
+        
+        
+        
         
         
         return "";
+    }
+    
+    /**
+     * Used to handle the sequence of bytes
+     */
+    private Map < String, String > handleSequence(Map<String, Object> sequences, Map < String, String > currentSequence) {
+        if (!currentSequence.isEmpty()) {
+            String index = String.valueOf(sequences.size());
+            sequences.put(index, currentSequence);
+        }
+        
+        return new HashMap <  >();
+    }
+    
+
+    private void addEntryToSequence(String newEntry, Map < String, String > currentSequence) {
+        String index = String.valueOf(currentSequence.size());
+        currentSequence.put(index, newEntry);
     }
     
     /**
