@@ -48,15 +48,15 @@ public class PitchToSprConverter {
        boolean hasSwitched = false;
        Map<String, Map < String, String >> sequences = new HashMap<>();
        Map < String, String > currentSequence = new HashMap <  >();
-       int limit = 2;
+       int limit = 5;
         String previousColor = "";
 
         for (String[] chunk : chunks) {
             //this.logMsg("Looping on chunck.");
             for (String currentColor : chunk) {
-                //this.logMsg("Looping on current color: " + currentColor);
+                this.logMsg("Looping on current color: " + currentColor);
                 if  (!previousColor.equals(currentColor)) {
-                    // this.logMsg("Color is different");
+                    this.logMsg("Color is different");
                     if (hasSwitched) {
                        // this.logMsg("Has switched, handling current sequence...");
                         currentSequence = this.handleSequence(sequences, currentSequence);
@@ -92,12 +92,12 @@ public class PitchToSprConverter {
                 }
                 
                 previousColor = currentColor;
-            }
-             this.handleSequence(sequences, currentSequence);
+            } 
+             currentSequence = this.handleSequence(sequences, currentSequence);
              
              limit--;
              if (limit == 0) {
-                 break;
+                 //break;
              }
              
         }
@@ -190,6 +190,7 @@ public class PitchToSprConverter {
         
         this.linePixelCount += sequenceSize;
         if (this.linePixelCount == this.width) {
+            this.logMsg("End of line !!!!!!!!!!!!");
             this.linePixelCount = 0;
         }
         
@@ -209,6 +210,7 @@ public class PitchToSprConverter {
         
         this.linePixelCount += count;
         if (this.linePixelCount == this.width) {
+            this.logMsg("End of line !!!!!!!!!!!!");
             this.linePixelCount = 0;
         }
             
@@ -294,7 +296,7 @@ public class PitchToSprConverter {
           return chunks;
     }
     
-    private String getColourFromPalette(String colorString) {
+    private String getColourFromPalette(String colorString) {        
         if (this.coloursMap.containsKey(colorString)) {
             return  this.coloursMap.get(colorString);
         } else {
