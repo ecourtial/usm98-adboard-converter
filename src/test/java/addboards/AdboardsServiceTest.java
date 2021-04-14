@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 import adboards.AdboardsService;
 import java.util.HashMap;
 import java.util.Map;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.times;
 import tools.PaletteColor;
