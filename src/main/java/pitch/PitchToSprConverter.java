@@ -6,6 +6,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import javax.imageio.ImageIO;
+import pitch.tools.ColorSequence;
 import tools.ValueCounter;
 
 public class PitchToSprConverter {
@@ -46,121 +47,89 @@ public class PitchToSprConverter {
         
        // Now we create sequences (repeated colors or sequences of single colors)
        boolean hasSwitched = false;
-       Map<String, Map < String, String >> sequences = new HashMap<>();
-       Map < String, String > currentSequence = new HashMap <  >();
-       int limit = 5;
+       Map<Integer, ColorSequence> sequences = new HashMap<>();
+       ColorSequence currentSequence = new ColorSequence();
         String previousColor = "";
 
         for (String[] chunk : chunks) {
-            //this.logMsg("Looping on chunck.");
             for (String currentColor : chunk) {
-                this.logMsg("Looping on current color: " + currentColor);
                 if  (!previousColor.equals(currentColor)) {
                     this.logMsg("Color is different");
                     if (hasSwitched) {
-                       // this.logMsg("Has switched, handling current sequence...");
+                        this.logMsg("Has switched, handling current sequence...");
                         currentSequence = this.handleSequence(sequences, currentSequence);
                         hasSwitched = false;
                     }
-                    this.addEntryToSequence(currentColor, currentSequence);
+                    currentSequence.add(currentColor);
                 } else {
-                    //this.logMsg("Color is the same");
+                    this.logMsg("Color is the same");
                     if (hasSwitched == false) {
-                        int lastIndex = currentSequence.size() - 1;
-                        String lastIndexString = String.valueOf(lastIndex);
-                        //this.logMsg("Last index: " + lastIndexString);
-                        if (currentSequence.get(lastIndexString).equals(currentColor) ) {
-                            //this.logMsg("Last index exists. Removing it from previous sequence.");
-                            currentSequence.remove(lastIndexString);
+                        if (currentSequence.getLastElement().equals(currentColor) ) {
+                            currentSequence.removeLastElement();
                         }
                         
-                         currentSequence = this.handleSequence(sequences, currentSequence);
-                        hasSwitched         = true;
-                        currentSequence.put("-1", "-1");
-                        this.addEntryToSequence(currentColor, currentSequence);
+                        currentSequence = this.handleSequence(sequences, currentSequence);
+                        hasSwitched  = true;
+                        currentSequence.add(currentColor);
                     }
-                    this.addEntryToSequence(currentColor, currentSequence);
+                    currentSequence.add(currentColor);
                     
                     // For dominant, max repetition = 63
                     if (
-                            ((currentColor.equals(this.dominantColor1) || currentColor.equals(this.dominantColor2)) && currentSequence.size() == 63)
-                            || ((!currentColor.equals(this.dominantColor1) && !currentColor.equals(this.dominantColor2)) && currentSequence.size() ==  16)
+                            ((currentColor.equals(this.dominantColor1) || currentColor.equals(this.dominantColor2)) && currentSequence.getSize()== 63)
+                            || ((!currentColor.equals(this.dominantColor1) && !currentColor.equals(this.dominantColor2)) && currentSequence.getSize()==  16)
                             ) {
                          currentSequence = this.handleSequence(sequences, currentSequence);
                         currentColor = "";
                     }
                 }
-                
                 previousColor = currentColor;
             } 
              currentSequence = this.handleSequence(sequences, currentSequence);
-             
-             limit--;
-             if (limit == 0) {
-                 //break;
-             }
-             
         }
-        chunks = null;
         
         // Finally convert
         this.logMsg("There are a total of " + sequences.size() + " sequences");
         
-        //sequences.values().forEach(sequence -> {
-
-       //for (String key : sequences.keySet()) {    
         for (int i = 0; i < sequences.size(); i++) {
-        String key = String.valueOf(i);
-            
-       this.logMsg("Parsing sequence with key: " + key);
-       Map < String, String >  sequence = sequences.get(key);
+             this.logMsg("Parsing sequence with key: " + i);
+             ColorSequence  sequence = sequences.get(i);
        
-       if (null == sequence) {
-           throw new Exception("Unknown sequence with key " + key);
-       }
+            if (null == sequence) {
+                throw new Exception("Unknown sequence with key " + i);
+            }
        
-//       for (String currentKey : sequence.keySet()) {    
-//           this.logMsg("Key present: " + currentKey);
-//       }
-//       
-        if (this.linePixelCount == 0) {
-
-                 Map.Entry<String, String> entry = sequence.entrySet().iterator().next();
-                String firstKey = entry.getKey();
-                String pixel = sequence.get(firstKey);
+            if (this.linePixelCount == 0) {
+                String pixel = sequence.getFirstElement();
                 
-    
                 this.logMsg("New line. Working on first pixel: " + pixel);
                 if (pixel.equals(this.dominantColor1) || pixel.equals(this.dominantColor2)) {
-                    if (sequence.containsKey("-1")) {
-                        sequence.remove("-1");
-                        int sequenceCount = sequence.size();
+                    if (sequence.isUniqueColor()) {
+                        int sequenceCount = sequence.getSize();
                         this.logMsg("1: " + pixel);
                         outputDuplication(pixel, sequenceCount);
-                        sequence = new HashMap <  >();
+                        sequence = new ColorSequence();
                     } else {
-                            sequence.remove(firstKey);
+                            sequence.removeFirstElement();
                             this.logMsg("2: " + pixel);
                            this.outputDuplication(pixel, 1);
                     }
                 } else {
-                    sequence.remove(firstKey);
+                    sequence.removeFirstElement();
                     this.logMsg("3: "+ pixel);
                     this.outputDuplication(pixel, 1);
                 }
             }
+            
+            if (sequence.getSize() == 0) {
+                continue;
+            }
 
-            if (sequence.containsKey("-1")) {
-                sequence.remove("-1");
-                int sequenceCount = sequence.size();
-                
-
-                
-                                 Map.Entry<String, String> entry = sequence.entrySet().iterator().next();
-                String pixel = entry.getValue();
+            if (sequence.isUniqueColor()) {
+                String pixel = sequence.getFirstElement();
                 
                 this.logMsg("4: "+ pixel);
-                this.outputDuplication(pixel, sequenceCount);
+                this.outputDuplication(pixel, sequence.getSize());
             } else {
                 this.outputSequence(sequence);
             }
@@ -174,8 +143,8 @@ public class PitchToSprConverter {
         return this.hexStringToOutPut;
     }
     
-    private void outputSequence(Map < String, String > currentSequence) {
-        int sequenceSize = currentSequence.size();
+    private void outputSequence(ColorSequence currentSequence) {
+        int sequenceSize = currentSequence.getSize();
         
         if (sequenceSize == 0) {
             return;
@@ -184,9 +153,9 @@ public class PitchToSprConverter {
         int cValue = sequenceSize + 191;
         this.hexStringToOutPut += Integer.toHexString(cValue);
         
-        currentSequence.values().forEach(value -> {
-            this.hexStringToOutPut += value;
-        });
+        for (int i = 0; i < sequenceSize; i++) {
+            this.hexStringToOutPut += currentSequence.getElement(i);
+        }
         
         this.linePixelCount += sequenceSize;
         if (this.linePixelCount == this.width) {
@@ -219,27 +188,21 @@ public class PitchToSprConverter {
     /**
      * Used to handle the sequence of bytes
      */
-    private Map < String, String > handleSequence(Map<String, Map < String, String >> sequences, Map < String, String > currentSequence) {
-        if (!currentSequence.isEmpty()) {
-            String index = String.valueOf(sequences.size());
+    private ColorSequence handleSequence(Map<Integer, ColorSequence> sequences, ColorSequence currentSequence) {
+        if (currentSequence.getSize() != 0) {
+            int index = sequences.size();
             sequences.put(index, currentSequence);
-            
-            
-                     
-         this.logMsg("Handling the current sequence (with index '"  + index + "') contains a total of " + currentSequence.size() + " bytes");
-        currentSequence.values().forEach(entry -> {
-                this.logMsg("Entry -> " + entry);
-            });
+
+            // Log. Remove when done and test written
+         this.logMsg("Handling the current sequence (with index '"  + index + "') contains a total of " + currentSequence.getSize()+ " colors");
+         
+            for (int i=0; i<currentSequence.getSize(); i++) {
+                this.logMsg("Entry -> " + currentSequence.getElement(i));
+            }
             
         }
         
-        return new HashMap <  >();
-    }
-    
-
-    private void addEntryToSequence(String newEntry, Map < String, String > currentSequence) {
-        String index = String.valueOf(currentSequence.size());
-        currentSequence.put(index, newEntry);
+        return new ColorSequence();
     }
     
     /**
