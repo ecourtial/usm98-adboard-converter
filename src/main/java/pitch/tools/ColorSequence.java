@@ -5,16 +5,16 @@
 package pitch.tools;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
-public class ColorSequence {
+public class ColorSequence  implements Iterable<String> {
     private boolean uniqueColor = true;
     private int currentIndex = -1;
     private int currentFirstIndex = -1;
     private String firstAddedColor = null;
     private Map < Integer, String > sequence = new HashMap < > ();
 
-    // NOTE FOR LATER: if refacto needed, consider make this object iterable...
     public void ColorSequence() {
         this.sequence = new HashMap < > ();
     }
@@ -94,5 +94,30 @@ public class ColorSequence {
         this.currentIndex = -1;
         this.uniqueColor = true;
         this.firstAddedColor = null;
+    }
+
+    @Override
+    public Iterator<String> iterator() {
+        return new Iterator<String> () {
+            int iteratorIndex = currentFirstIndex;
+            
+            @Override
+            public boolean hasNext() {
+                return sequence.containsKey(this.iteratorIndex);
+            }
+
+            @Override
+            public String next() {
+                String element = sequence.get(this.iteratorIndex);
+                this.iteratorIndex++;
+                
+                return element;
+            }
+
+            @Override
+            public void remove() {
+                throw new UnsupportedOperationException("no changes allowed");
+            }
+        };
     }
 }

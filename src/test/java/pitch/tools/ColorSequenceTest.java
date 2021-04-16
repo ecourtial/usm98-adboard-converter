@@ -83,5 +83,35 @@ public class ColorSequenceTest {
         assertEquals(1, sequence.getSize());
         assertEquals("A New First value", sequence.getFirstElement());
         assertEquals("A New First value", sequence.getLastElement());
+        
+        // Iterator
+        sequence = new ColorSequence();
+        sequence.add("A");
+        sequence.add("B");
+        sequence.add("C");
+        
+        String output = "";
+        
+        for (String element: sequence) {
+            output += element;
+        }
+        
+        assertEquals("ABC", output);
+        
+        sequence.clear();
+        output = "";
+        sequence.add("A");
+        sequence.add("B");
+        sequence.add("C");
+        sequence.add("D");
+        sequence.removeFirstElement();
+        sequence.removeLastElement();
+        
+                
+        for (String element: sequence) {
+            output += element;
+        }
+        
+        assertEquals("BC", output);
     }
 }
