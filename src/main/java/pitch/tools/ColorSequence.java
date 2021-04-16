@@ -14,6 +14,7 @@ public class ColorSequence {
     private String firstAddedColor = null;
     private Map < Integer, String > sequence = new HashMap < > ();
 
+    // NOTE FOR LATER: if refacto needed, consider make this object iterable...
     public void ColorSequence() {
         this.sequence = new HashMap < > ();
     }
@@ -36,21 +37,21 @@ public class ColorSequence {
 
     public String getFirstElement() throws Exception {
         if (this.sequence.containsKey(this.currentFirstIndex) == false) {
-            throw new Exception("There is no element in the sequence!");
+            throw new Exception("There is no first element in the sequence!");
         }
         return this.sequence.get(this.currentFirstIndex);
     }
 
     public String getLastElement() throws Exception {
         if (this.sequence.containsKey(this.currentIndex) == false) {
-            throw new Exception("There is no such element in the sequence!");
+            throw new Exception("There is no last element in the sequence!");
         }
         return this.sequence.get(this.currentIndex);
     }
 
     public void removeFirstElement() throws Exception {
         if (this.sequence.containsKey(this.currentFirstIndex) == false) {
-            throw new Exception("There is no such element in the sequence!");
+            throw new Exception("There is no first element in the sequence!");
         }
         this.sequence.remove(this.currentFirstIndex);
         this.currentFirstIndex++;
@@ -62,7 +63,7 @@ public class ColorSequence {
 
     public void removeLastElement() throws Exception {
         if (this.sequence.containsKey(this.currentIndex) == false) {
-            throw new Exception("There is no such element in the sequence!");
+            throw new Exception("There is no last element in the sequence!");
         }
         this.sequence.remove(this.currentIndex);
         this.currentIndex--;
@@ -72,10 +73,13 @@ public class ColorSequence {
         }
     }
 
-    public String getElement(int index) {
+    public String getElement(int index) throws Exception {
+        if (this.sequence.containsKey(index) == false) {
+            throw new Exception("There is no such element in the sequence! Requested key was: " + index);
+        }
         return this.sequence.get(index);
     }
-
+    
     public boolean isUniqueColor() {
         return this.uniqueColor;
     }
