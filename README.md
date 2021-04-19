@@ -25,3 +25,13 @@ This small application is designed to help you to edit the textures in the game 
 ### 1.0
 * Feature to export and import adboards.
 * Includes the color palette on CSV format.
+
+### 1.1
+
+#### New features
+* Feature to import and export pitches (field).
+* When converting from BMP to SPR: you can use a color override configuration for colors not recognized by the palette.
+* Added a logger option to help modders to debug.
+
+#### Miscellaneous
+* Trim entries when parsing the palette.

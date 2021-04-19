@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 import javax.imageio.ImageIO;
+import tools.Logger;
 import tools.PaletteColor;
 
 public class PitchToBmpConverter {
@@ -21,7 +22,13 @@ public class PitchToBmpConverter {
     private int printedPixels = 0;
     private BufferedImage img;
     private Map < String, PaletteColor > coloursMap;
+    private final Logger logger;
 
+    public PitchToBmpConverter(Logger logger, boolean debug) {
+        this.logger = logger;
+        this.debugMode = debug;
+    }
+    
     public void convert(Map < String, PaletteColor > coloursMap, byte[] fileContent, int Width, int Height, String outputPath) throws IOException {
         this.width = Width;
         this.coloursMap = coloursMap;
@@ -109,7 +116,7 @@ public class PitchToBmpConverter {
 
                 try {
                     this.draw(hex, qty);
-                } catch (Exception e) {
+                } catch (IOException e) {
                     this.outputImage(outputPath); // To help the user to see where the file is corrupted
                     this.debugMessage("An error was raised. Current coordinates are: " + this.x + " - " + this.y);
                     throw e;
@@ -131,9 +138,9 @@ public class PitchToBmpConverter {
         this.outputImage(outputPath);
     }
 
-    private void debugMessage(String msg) {
+    private void debugMessage(String msg) throws IOException {
         if (this.debugMode) {
-            System.out.println(msg);
+            this.logger.log(msg);
         }
     }
 
@@ -176,7 +183,7 @@ public class PitchToBmpConverter {
         this.standardMode = false;
     }
 
-    private boolean isEndOfLine() {
+    private boolean isEndOfLine() throws IOException {
         this.debugMessage(this.printedPixels + " pixels draw so far (of " + this.width + ")");
         if (this.printedPixels == this.width) {
             this.debugMessage("Triggering new line");
@@ -190,7 +197,7 @@ public class PitchToBmpConverter {
         return false;
     }
 
-    private void draw(String hex, int qty) {
+    private void draw(String hex, int qty) throws IOException {
 
         Color color = new Color(0, 0, 0, 0);
         if (coloursMap.containsKey(hex)) {

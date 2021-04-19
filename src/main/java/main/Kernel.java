@@ -6,9 +6,11 @@ import adboards.AdboardToSprConverter;
 import tools.BinaryService;
 import tools.PaletteExtractor;
 import java.io.IOException;
+import java.util.Arrays;
 import pitch.PitchService;
 import pitch.PitchToBmpConverter;
 import pitch.PitchToSprConverter;
+import tools.Logger;
 
 public class Kernel extends Thread {
 
@@ -20,9 +22,11 @@ public class Kernel extends Thread {
     private final USMTextureManager ui;
     
     private int Param1FromGui;
+    private final Logger logger;
 
-    Kernel(USMTextureManager userInterface) {
+    public Kernel(USMTextureManager userInterface) {
         this.ui = userInterface;
+        this.logger = new Logger();
     }
 
     // Set the action to run in the thread
@@ -59,6 +63,8 @@ public class Kernel extends Thread {
         } catch (Exception throwable) {
             this.ui.log("An error occured:");
             this.ui.log(throwable.getMessage());
+            System.out.println(throwable.getMessage());
+            System.out.println(Arrays.toString(throwable.getStackTrace()));
         }
 
         this.ui.enableUi(true);
@@ -84,9 +90,9 @@ public class Kernel extends Thread {
         if (this.pitchService == null){
             this.pitchService = new PitchService(
                new PaletteExtractor(Kernel.PALETTE_PATH),
-               new PitchToBmpConverter(),
-               new PitchToSprConverter(),
-               new BinaryService()     
+               new PitchToBmpConverter(this.logger, true),
+               new PitchToSprConverter(this.logger, true),
+               new BinaryService()
             );
         }
         

@@ -3,12 +3,14 @@ package pitch;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import javax.imageio.ImageIO;
 import pitch.tools.ColorSequence;
 import pitch.tools.Line;
 import pitch.tools.LineContainer;
+import tools.Logger;
 import tools.ValueCounter;
 
 public class PitchToSprConverter {
@@ -20,7 +22,13 @@ public class PitchToSprConverter {
     private int height;
     private String hexStringToOutPut;
     private int linePixelCount = 0;
-    private boolean debug = true;
+    private boolean debug = false;
+    private final Logger logger;
+    
+    public PitchToSprConverter(Logger logger, boolean debug) {
+        this.logger = logger;
+        this.debug = debug;
+    }
     
     public String convert(
         Map < String, String > coloursMap,
@@ -55,7 +63,8 @@ public class PitchToSprConverter {
         String previousColor = "";
         int lineCount =  0;
         int limit = 6;
-
+        int lineLenght = 0;
+        
         for (String[] chunk : chunks) {
             this.logMsg("Working on line #" + lineCount);
             
@@ -72,6 +81,7 @@ public class PitchToSprConverter {
             line = new Line();
             
             for (String currentColor : chunk) {
+                lineLenght += chunk.length;
                 if  (!previousColor.equals(currentColor)) {
                     //this.logMsg("Color is different");
                     if (hasSwitched) {
@@ -103,7 +113,13 @@ public class PitchToSprConverter {
                     }
                 }
                 previousColor = currentColor;
-            } 
+                
+//                if (currentSequence.getSize() == 64 && currentSequence.isUniqueColor() == false) {
+//                    previousColor = "";
+//                    currentSequence = this.handleSequence(line, currentSequence);
+//                }
+                
+            }
              currentSequence = this.handleSequence(line, currentSequence);
              
              
@@ -115,11 +131,14 @@ public class PitchToSprConverter {
                   throw new Exception("FAILED There are a total of " + this.width + " colors in this line"); 
              }
              
-             
+             if (lineLenght % 2 != 0) {
+                 throw new Exception("LINE #" + lineCount + " is not of even lenght!");
+             }
              
              lines.add(line);
              lineCount++;
              previousColor = "";
+             lineLenght = 0;
         }
         
                      this.logMsg("There are a total of " + lines.getLinesCount()+ " lines for this file");
@@ -133,9 +152,13 @@ public class PitchToSprConverter {
         // Finally convert
 
         ColorSequence sequence;
-        
+         int currentByteCount;
+                 
         for (int i = 0; i < lines.getLinesCount(); i++) {
              this.logMsg("Parsing line with key: " + i);
+             
+             currentByteCount = this.hexStringToOutPut.length();
+             
              line = lines.getLine(i);
              
              for (int y = 0; y < line.getSequencesCount(); y++) {
@@ -176,15 +199,18 @@ public class PitchToSprConverter {
                     this.outputSequence(sequence);
                 }
         }
+             
+        this.logMsg("End of line with key: " + i);
+       
+                if (this.hexStringToOutPut.length() % 2 != 0) {
+            throw new Exception("Hex string to output is not of even lenght! Last line was #" + i + ". Line color count was:  " + line.getBytesCount() + ". Previous total count was: " + currentByteCount);
+        }
+        
     }
+        this.logMsg("Job is finished, returning content.");
+       
         
-        this.hexStringToOutPut = "50414B3200021E7D" + this.hexStringToOutPut;
-        
-        System.out.println(this.hexStringToOutPut);
-        
-        this.logMsg(this.hexStringToOutPut);
-        
-        return this.hexStringToOutPut;
+        return "50414B3200021E7D" + this.hexStringToOutPut;
     }
     
     private void outputSequence(ColorSequence currentSequence) throws Exception {
@@ -196,6 +222,10 @@ public class PitchToSprConverter {
         
         int cValue = sequenceSize + 191;
         this.hexStringToOutPut += Integer.toHexString(cValue);
+        
+        if (Integer.toHexString(cValue).length() % 2 != 0) {
+            throw new Exception (Integer.toHexString(cValue) + " is not of even length. Sequence size was: " + sequenceSize);
+        }
         
         //for (int i = 0; i < currentSequence.getCurrentFirstIndex() ; i++) {
         for (String colorElement: currentSequence) {
@@ -213,7 +243,7 @@ public class PitchToSprConverter {
     
     // Output qty * color. Ex: 02 35 will output 3 times the color 35
 // Or if one of the two dominant colors
-    private void outputDuplication(String color, int count) {
+    private void outputDuplication(String color, int count) throws IOException {
         if (color.equals(this.dominantColor1)) {
             this.hexStringToOutPut += Integer.toHexString(count + 63);
         } else if(color.equals(this.dominantColor2)) {
@@ -233,7 +263,7 @@ public class PitchToSprConverter {
     /**
      * Used to handle the sequence of bytes
      */
-    private ColorSequence handleSequence(Line line, ColorSequence currentSequence) {
+    private ColorSequence handleSequence(Line line, ColorSequence currentSequence) throws IOException {
         if (currentSequence.getSize() != 0) {
             line.add(currentSequence);
 
@@ -254,7 +284,7 @@ public class PitchToSprConverter {
      * - extract the two dominant colors;
      * - split the file in chunks of the size of the image width
      */
-    private String[][] parseFile() {
+    private String[][] parseFile() throws IOException {
         Map < String, ValueCounter > colorsIndex = new HashMap < > ();
         String[][] chunks = new String[this.height][this.width];
 
@@ -303,18 +333,19 @@ public class PitchToSprConverter {
           return chunks;
     }
     
-    private String getColourFromPalette(String colorString) {        
+    private String getColourFromPalette(String colorString) throws IOException {        
         if (this.coloursMap.containsKey(colorString)) {
-            return  this.coloursMap.get(colorString);
+            return   this.coloursMap.get(colorString);
         } else {
             this.logMsg("Color not found in palette: " + colorString + ". Return default value 00.");
             return "38"; // Bright red by default to help highlight unrecognized colors
         }
     }
     
-    private void logMsg(String msg) {
+    private void logMsg(String msg) throws IOException {
         if (this.debug) {
             System.out.println(msg);
+            this.logger.log(msg);
         }
     }
 }
