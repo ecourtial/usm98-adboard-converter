@@ -20,13 +20,14 @@ public class PitchToSprConverter {
     private int width;
     private int height;
     private String hexStringToOutPut;
-    private int linePixelCount = 0;
     private boolean debug = false;
     private final Logger logger;
+    private final Map < String, String > colorsNotFoundInPalette; 
     
     public PitchToSprConverter(Logger logger, boolean debug) {
         this.logger = logger;
         this.debug = debug;
+        this.colorsNotFoundInPalette = new HashMap <>();
     }
     
     public String convert(
@@ -52,7 +53,6 @@ public class PitchToSprConverter {
 
         // Init: extract dominant colors and split in chunks of the size of each line (670 pixels)
         String[] chunks = this.parseFile();
-        this.hexStringToOutPut = this.dominantColor1 + this.dominantColor2;
         
        // Now we create sequences (repeated colors or sequences of single colors)
        boolean hasSwitched = false;
@@ -118,8 +118,24 @@ public class PitchToSprConverter {
                this.outputSequence(sequence);
            }
     }
+        
+       if ( false == this.colorsNotFoundInPalette.isEmpty()) {
+           this.logMsg("The following colors were not found in the given palettes or override:");
+            for (String colorNotFound: this.colorsNotFoundInPalette.keySet()) {
+                    this.logMsg("color with key " + colorNotFound);
+            }
+       }
 
-        return "50414B3200021E7D" + this.hexStringToOutPut;
+       /**
+        * Now we need to calculate the file length to fill the header to tell the game where to stop when
+        * loading the file. Otherwise, some part of the data might be missing.
+        */
+       int totalLength = (this.hexStringToOutPut.length() + 16) / 2;
+       String hexLength = Integer.toHexString(totalLength);
+       this.logMsg("Total length: " + totalLength + " bytes (" + hexLength + ").");
+       String stopPoint = hexLength.substring(1);
+
+        return "50414B320002" + stopPoint + this.dominantColor1 + this.dominantColor2 + this.hexStringToOutPut;
     }
     
     private void outputSequence(ColorSequence currentSequence) throws Exception {
@@ -172,13 +188,6 @@ public class PitchToSprConverter {
         } else {
             this.hexStringToOutPut += "0" + Integer.toHexString(count - 1) + color;
         }
-        
-        this.linePixelCount += count;
-        if (this.linePixelCount == this.width) {
-            this.logMsg("End of line !!!!!!!!!!!!");
-            this.linePixelCount = 0;
-        }
-            
     }
     
     /**
@@ -258,6 +267,7 @@ public class PitchToSprConverter {
             return   this.coloursMap.get(colorString);
         } else {
             this.logMsg("Color not found in palette: " + colorString + ". Return default value 00.");
+            this.colorsNotFoundInPalette.put(colorString, colorString);
             return "38"; // Bright red by default to help highlight unrecognized colors
         }
     }
