@@ -1,5 +1,5 @@
 /*
- * A line represents a line in the file. It is just a container for sequences, in order. This is used 
+ * Represents the whole file. It is just a container for sequences, in order. This is used 
  * when converting from BMP to SPR.
  */
 package pitch.tools;
@@ -7,7 +7,7 @@ package pitch.tools;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Line {
+public class SequencesContainer {
     private final Map < Integer, ColorSequence > sequences = new HashMap < > ();
     private int currentIndex = 0;
 
