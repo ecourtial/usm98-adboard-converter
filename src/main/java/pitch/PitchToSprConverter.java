@@ -61,7 +61,6 @@ public class PitchToSprConverter {
         String previousColor = "";
         
         for (String currentColor : chunks) {
-            System.out.println("Current color: " + currentColor);
                 if  (!previousColor.equals(currentColor)) {
                     //this.logMsg("Color is different");
                     if (hasSwitched) {
@@ -130,12 +129,34 @@ public class PitchToSprConverter {
             return;
         }
         
-        int cValue = sequenceSize + 191;
-        this.hexStringToOutPut += Integer.toHexString(cValue);
+        int cValue;
+        int localCount = 0;
+        ColorSequence newSequence = new ColorSequence();
         
-        //for (int i = 0; i < currentSequence.getCurrentFirstIndex() ; i++) {
-        for (String colorElement: currentSequence) {
-            this.hexStringToOutPut += colorElement;
+        for (String color: currentSequence) {
+            newSequence.add(color);
+            localCount++;
+            
+            if (localCount == 64) {
+                localCount = 0;
+                cValue = sequenceSize + 191;
+                this.hexStringToOutPut += Integer.toHexString(cValue);
+
+                for (String colorElement: newSequence) {
+                    this.hexStringToOutPut += colorElement;
+                }
+                
+                newSequence = new ColorSequence();
+            }
+        }
+        
+        if (newSequence.getSize() != 0) {
+                cValue = sequenceSize + 191;
+                this.hexStringToOutPut += Integer.toHexString(cValue);
+
+                for (String colorElement: newSequence) {
+                    this.hexStringToOutPut += colorElement;
+                }
         }
 
         currentSequence.clear();

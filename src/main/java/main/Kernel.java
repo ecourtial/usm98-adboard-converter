@@ -20,13 +20,14 @@ public class Kernel extends Thread {
     private PitchService pitchService;
     private String action = "noDefinedActionSofar";
     private final USMTextureManager ui;
+    private boolean loggerEnabled = false;
     
     private int Param1FromGui;
     private final Logger logger;
 
-    public Kernel(USMTextureManager userInterface) {
+    public Kernel(USMTextureManager userInterface, Logger logger) {
         this.ui = userInterface;
-        this.logger = new Logger();
+        this.logger = logger;
     }
 
     // Set the action to run in the thread
@@ -39,6 +40,11 @@ public class Kernel extends Thread {
         this.Param1FromGui = Param;
     }
 
+    // Enable or disable logs
+    public void enableLog(boolean enabled) {
+        this.loggerEnabled = enabled;
+    }
+    
     @Override
     public void run() {
         try {
@@ -90,8 +96,8 @@ public class Kernel extends Thread {
         if (this.pitchService == null){
             this.pitchService = new PitchService(
                new PaletteExtractor(Kernel.PALETTE_PATH),
-               new PitchToBmpConverter(this.logger, true),
-               new PitchToSprConverter(this.logger, true),
+               new PitchToBmpConverter(this.logger, this.loggerEnabled),
+               new PitchToSprConverter(this.logger, this.loggerEnabled),
                new BinaryService()
             );
         }

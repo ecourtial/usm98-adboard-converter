@@ -41,6 +41,7 @@ public class USMTextureManager extends javax.swing.JFrame {
         PitchLabel = new javax.swing.JLabel();
         pitchToBmpButton = new javax.swing.JButton();
         pitchToSprButton = new javax.swing.JButton();
+        logEnabledCheckbox = new javax.swing.JCheckBox();
 
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
@@ -100,6 +101,13 @@ public class USMTextureManager extends javax.swing.JFrame {
             }
         });
 
+        logEnabledCheckbox.setText("Enable logs");
+        logEnabledCheckbox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                logEnabledCheckboxActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -108,7 +116,10 @@ public class USMTextureManager extends javax.swing.JFrame {
                 .addGap(15, 15, 15)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 423, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(exitButton)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(logEnabledCheckbox)
+                        .addGap(42, 42, 42)
+                        .addComponent(exitButton))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(addboardsLabel)
@@ -145,7 +156,9 @@ public class USMTextureManager extends javax.swing.JFrame {
                         .addGap(33, 33, 33)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(exitButton))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(exitButton)
+                            .addComponent(logEnabledCheckbox)))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(pitchToBmpButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -191,9 +204,13 @@ public class USMTextureManager extends javax.swing.JFrame {
         this.triggerActionToKernel("pitchToSpr", "This conversion usually takes a few seconds.", selectedIndex);
     }//GEN-LAST:event_pitchToSprButtonActionPerformed
 
+    private void logEnabledCheckboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logEnabledCheckboxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_logEnabledCheckboxActionPerformed
+
     private void triggerActionToKernel(String action, String message,  int param1) {
         try {
-            this.process(action, message, param1);
+            this.process(action, message, param1, this.logEnabledCheckbox.isSelected());
         } catch (InterruptedException ex) {
             Logger.getLogger(USMTextureManager.class.getName()).log(Level.SEVERE, null, ex);
             this.showErrorBox("Impossible to perform operation: " + ex.getMessage());
@@ -201,14 +218,15 @@ public class USMTextureManager extends javax.swing.JFrame {
     }
     
     // Controlling the whole process in a thread
-    void process(String action, String message, int param1) throws InterruptedException {
+    void process(String action, String message, int param1, boolean logEnabled) throws InterruptedException {
         this.consoleBox.setText("");
         this.log("Starting process...");
         this.log(message);
         this.enableUi(false);
-        Kernel kernel = new Kernel(this);
+        Kernel kernel = new Kernel(this, new tools.Logger());
         kernel.setAction(action);
         kernel.setParam1(param1);
+        kernel.enableLog(logEnabled);
         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
 
         Thread kernelThread = new Thread(() -> {
@@ -280,6 +298,7 @@ public class USMTextureManager extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JCheckBox logEnabledCheckbox;
     private javax.swing.JButton pitchToBmpButton;
     private javax.swing.JButton pitchToSprButton;
     // End of variables declaration//GEN-END:variables
