@@ -19,7 +19,7 @@ public class PitchToSprConverter {
     private String dominantColor2;
     private int width;
     private int height;
-    private String hexStringToOutPut;
+    private String hexStringToOutPut = "";
     private boolean debug = false;
     private final Logger logger;
     private final Map < String, String > colorsNotFoundInPalette; 
@@ -133,9 +133,8 @@ public class PitchToSprConverter {
        int totalLength = (this.hexStringToOutPut.length() + 16) / 2;
        String hexLength = Integer.toHexString(totalLength);
        this.logMsg("Total length: " + totalLength + " bytes (" + hexLength + ").");
-       String stopPoint = hexLength.substring(1);
 
-        return "50414B320002" + stopPoint + this.dominantColor1 + this.dominantColor2 + this.hexStringToOutPut;
+        return "50414B32000" + hexLength + this.dominantColor1 + this.dominantColor2 + this.hexStringToOutPut;
     }
     
     private void outputSequence(ColorSequence currentSequence) throws Exception {
@@ -196,7 +195,7 @@ public class PitchToSprConverter {
     private ColorSequence handleSequence(SequencesContainer container, ColorSequence currentSequence) throws IOException {
         if (currentSequence.getSize() != 0) {
             container.add(currentSequence);
-
+            
             // Log. Remove when done and test written
          this.logMsg("Handling the current sequence (with index '"  + (container.getSequencesCount() - 1) + "') contains a total of " + currentSequence.getSize()+ " colors");
          
