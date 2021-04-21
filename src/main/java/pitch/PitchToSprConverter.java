@@ -147,16 +147,16 @@ public class PitchToSprConverter {
         int cValue;
         int localCount = 0;
         ColorSequence newSequence = new ColorSequence();
-        
+
         for (String color: currentSequence) {
             newSequence.add(color);
             localCount++;
             
             if (localCount == 64) {
                 localCount = 0;
-                cValue = sequenceSize + 191;
+                cValue = newSequence.getSize() + 191;
                 this.hexStringToOutPut += Integer.toHexString(cValue);
-
+                
                 for (String colorElement: newSequence) {
                     this.hexStringToOutPut += colorElement;
                 }
@@ -166,7 +166,7 @@ public class PitchToSprConverter {
         }
         
         if (newSequence.getSize() != 0) {
-                cValue = sequenceSize + 191;
+                cValue = newSequence.getSize() + 191;
                 this.hexStringToOutPut += Integer.toHexString(cValue);
 
                 for (String colorElement: newSequence) {
@@ -219,8 +219,8 @@ public class PitchToSprConverter {
         int index = 0;
 
         // Parse the file
-          for (int y = 0; y < this.image.getHeight(); y++) {
-            for (int x = 0; x < this.image.getWidth(); x++) {
+          for (int y = 0; y < this.height; y++) {
+            for (int x = 0; x < this.width; x++) {
                 Color color = new Color(this.image.getRGB(x, y), true);
                 String colorString = color.getRed() + "-" + color.getGreen() + "-" + color.getBlue();
 
