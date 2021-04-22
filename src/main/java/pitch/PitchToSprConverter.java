@@ -245,6 +245,9 @@ public class PitchToSprConverter {
           this.dominantColor1 = this.getColourFromPalette(biggestOne.getValue());
           this.dominantColor2 = this.getColourFromPalette(biggestTwo.getValue());
           
+          this.logMsg("Dominant color #1: " + this.dominantColor1);
+          this.logMsg("Dominant color #2: " + this.dominantColor2);
+          
           return chunks;
     }
     

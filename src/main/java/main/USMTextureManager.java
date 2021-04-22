@@ -48,7 +48,7 @@ public class USMTextureManager extends javax.swing.JFrame {
         jScrollPane1.setViewportView(jTextArea1);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("USM98 Textures Manager 1.1");
+        setTitle("USM98 Textures Manager 1.1 beta1");
 
         addboardsLabel.setText("Adboards");
 

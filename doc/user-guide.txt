@@ -66,7 +66,7 @@ worry, we are working on it, and you soon will be able to edit those elements to
 
 There are 4 pitches: winter, normal, snowy and wet. Each one of them is splitted in two part, left and right.
 To see which one you want to edit, start a game, save it before the next match. Go in to the match but don't start it, just to look which one it is.
-Then, in the folder of the USM textures manager, you will see a file named "pitch-correspondence". It will help you
+Then, in the documentation folder of the USM textures manager, you will see a file named "pitch-correspondence". It will help you
 to see which one is the good to edit.
 
 A small tip : when you wan to do some tests, you reverse the left and right parts. It will help you to see almost
