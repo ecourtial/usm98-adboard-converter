@@ -33,5 +33,8 @@ This small application is designed to help you to edit the textures in the game 
 * When converting from BMP to SPR: you can use a color override configuration for colors not recognized by the palette.
 * Added a logger option to help modders to debug.
 
+#### Bufixes
+* Fix error output in the console.
+
 #### Miscellaneous
 * Trim entries when parsing the palette.

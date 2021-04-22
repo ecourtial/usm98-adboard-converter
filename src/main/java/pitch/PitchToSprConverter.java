@@ -30,6 +30,7 @@ public class PitchToSprConverter {
         this.colorsNotFoundInPalette = new HashMap <>();
     }
     
+    // Main method, called for the conversion process.
     public String convert(
         Map < String, String > coloursMap,
         String bmpFilePath,
@@ -51,7 +52,7 @@ public class PitchToSprConverter {
             throw new Exception("Image must be a valid BMP file!");
         }
 
-        // Init: extract dominant colors and split in chunks of the size of each line (670 pixels)
+        // Init: extracts pixels and calculates dominant colors. Note: we could easily improve memory footprint with refacto.
         String[] chunks = this.parseFile();
         
        // Now we create sequences (repeated colors or sequences of single colors)
@@ -62,15 +63,12 @@ public class PitchToSprConverter {
         
         for (String currentColor : chunks) {
                 if  (!previousColor.equals(currentColor)) {
-                    //this.logMsg("Color is different");
                     if (hasSwitched) {
-                        //this.logMsg("Has switched, handling current sequence...");
                         currentSequence = this.handleSequence(container, currentSequence);
                         hasSwitched = false;
                     }
                     currentSequence.add(currentColor);
                 } else {
-                    //this.logMsg("Color is the same");
                     if (hasSwitched == false) {
                         if (currentSequence.getLastElement().equals(currentColor) ) {
                             currentSequence.removeLastElement();
@@ -82,7 +80,7 @@ public class PitchToSprConverter {
                     }
                     currentSequence.add(currentColor);
 
-                    // For dominant, max repetition = 63
+                    // For dominant, max repetition = 63. For non dominants: max repetition = 16.
                     if (
                             ((currentColor.equals(this.dominantColor1) || currentColor.equals(this.dominantColor2)) && currentSequence.getSize()== 63)
                             || ((!currentColor.equals(this.dominantColor1) && !currentColor.equals(this.dominantColor2)) && currentSequence.getSize()==  16)
@@ -92,24 +90,20 @@ public class PitchToSprConverter {
                     }
                 }
                 previousColor = currentColor;
-
             }
+
             this.handleSequence(container, currentSequence);
 
+            // Little check-up
              int bytesCount = container.getBytesCount();
-             if (bytesCount == this.width * this.height) {
-                  this.logMsg("GOOD There are a total of " + bytesCount + " colors in this file"); 
-             } else {
-                  throw new Exception("FAILED There are a total of " + bytesCount + " colors in this file"); 
+             if (bytesCount != this.width * this.height) {
+                  throw new Exception("Extraction failed: we extracted a total of " + bytesCount + " colors in this file"); 
              }
         
         // Finally convert
-
         ColorSequence sequence;
 
         for (int i = 0; i < container.getSequencesCount(); i++) {
-             this.logMsg("sequence with key: " + i);
-             
              sequence = container.getSequence(i);
              
            if (sequence.isUniqueColor()) {
@@ -119,6 +113,7 @@ public class PitchToSprConverter {
            }
     }
         
+       // If logging is enabled, we report all the missing colors.
        if ( false == this.colorsNotFoundInPalette.isEmpty()) {
            this.logMsg("The following colors were not found in the given palettes or override:");
             for (String colorNotFound: this.colorsNotFoundInPalette.keySet()) {
@@ -137,14 +132,12 @@ public class PitchToSprConverter {
         return "50414B32000" + hexLength + this.dominantColor1 + this.dominantColor2 + this.hexStringToOutPut;
     }
     
+    // This method is used to output the content of a colors sequence.
     private void outputSequence(ColorSequence currentSequence) throws Exception {
-        int sequenceSize = currentSequence.getSize();
-        
-        if (sequenceSize == 0) {
+        if (currentSequence.getSize() == 0) {
             return;
         }
         
-        int cValue;
         int localCount = 0;
         ColorSequence newSequence = new ColorSequence();
 
@@ -154,31 +147,31 @@ public class PitchToSprConverter {
             
             if (localCount == 64) {
                 localCount = 0;
-                cValue = newSequence.getSize() + 191;
-                this.hexStringToOutPut += Integer.toHexString(cValue);
-                
-                for (String colorElement: newSequence) {
-                    this.hexStringToOutPut += colorElement;
-                }
-                
-                newSequence = new ColorSequence();
+                this.processColorSequence(newSequence);
             }
         }
         
+        // If some colors are remaining because the last iteration of the sequence contains less than 64 colors.
         if (newSequence.getSize() != 0) {
-                cValue = newSequence.getSize() + 191;
-                this.hexStringToOutPut += Integer.toHexString(cValue);
-
-                for (String colorElement: newSequence) {
-                    this.hexStringToOutPut += colorElement;
-                }
+                this.processColorSequence(newSequence);
         }
 
         currentSequence.clear();
     }
     
-    // Output qty * color. Ex: 02 35 will output 3 times the color 35
-// Or if one of the two dominant colors
+    // Used by outputSequence() for factorization.
+    private void processColorSequence(ColorSequence newSequence) {
+        int cValue = newSequence.getSize() + 191;
+                this.hexStringToOutPut += Integer.toHexString(cValue);
+                
+                for (String colorElement: newSequence) {
+                    this.hexStringToOutPut += colorElement;
+                }
+                
+                newSequence.clear();
+    }
+    
+    // Output repeatition of the same color.
     private void outputDuplication(String color, int count) throws IOException {
         if (color.equals(this.dominantColor1)) {
             this.hexStringToOutPut += Integer.toHexString(count + 63);
@@ -189,19 +182,16 @@ public class PitchToSprConverter {
         }
     }
     
-    /**
-     * Used to handle the sequence of bytes
-     */
+    // Used to handle a sequence of bytes when splitting the files in to sequences
     private ColorSequence handleSequence(SequencesContainer container, ColorSequence currentSequence) throws IOException {
         if (currentSequence.getSize() != 0) {
             container.add(currentSequence);
-            
-            // Log. Remove when done and test written
          this.logMsg("Handling the current sequence (with index '"  + (container.getSequencesCount() - 1) + "') contains a total of " + currentSequence.getSize()+ " colors");
          
-            for (String colorElement: currentSequence) {
-                this.logMsg("Entry -> " + colorElement);
-            }
+         // Toggle comment when debugging.
+//            for (String colorElement: currentSequence) {
+//                this.logMsg("Entry -> " + colorElement);
+//            }
             
         }
         
@@ -209,12 +199,12 @@ public class PitchToSprConverter {
     }
     
     /**
-     * This method has two objective while parsing the file:
+     * This method has two objectives while parsing the file:
      * - extract the two dominant colors;
      * - split the file in chunks of the size of the image width
      */
     private String[] parseFile() throws IOException {
-        Map < String, ValueCounter > colorsIndex = new HashMap < > ();
+        Map < String, Integer > colorsIndex = new HashMap < > ();
         String[] chunks = new String[this.height * this.width];
         int index = 0;
 
@@ -225,12 +215,9 @@ public class PitchToSprConverter {
                 String colorString = color.getRed() + "-" + color.getGreen() + "-" + color.getBlue();
 
                 if (colorsIndex.containsKey(colorString)) {
-                    colorsIndex.get(colorString).increment();
+                    colorsIndex.put(colorString, colorsIndex.get(colorString) + 1);
                 } else {
-                    ValueCounter tmpCounter = new ValueCounter();
-                    tmpCounter.setValue(colorString);
-                    tmpCounter.increment();
-                    colorsIndex.put(colorString, tmpCounter);
+                    colorsIndex.put(colorString, 1);
                 }
                 
                 chunks[index] = this.getColourFromPalette(colorString);
@@ -242,16 +229,16 @@ public class PitchToSprConverter {
           ValueCounter biggestTwo = new ValueCounter();
           
           for (String key : colorsIndex.keySet()) {
-              if (colorsIndex.get(key).getCount()> biggestOne.getCount()) {
+              if (colorsIndex.get(key) > biggestOne.getCount()) {
                   // First case: the value is bigger than both the two bigger we got so far
                   biggestTwo = biggestOne;
                   biggestOne = new ValueCounter();
                   biggestOne.setValue(key);
-                  biggestOne.setCount(colorsIndex.get(key).getCount());
-              } else if(colorsIndex.get(key).getCount()> biggestTwo.getCount()) {
+                  biggestOne.setCount(colorsIndex.get(key));
+              } else if(colorsIndex.get(key) > biggestTwo.getCount()) {
                   // First case: the value is bigger than the second bigger
                   biggestTwo.setValue(key);
-                  biggestTwo.setCount(colorsIndex.get(key).getCount());
+                  biggestTwo.setCount(colorsIndex.get(key));
               }
         }
           
