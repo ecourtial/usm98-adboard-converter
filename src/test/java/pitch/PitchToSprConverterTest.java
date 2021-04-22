@@ -9,7 +9,7 @@ import tools.PaletteExtractor;
 public class PitchToSprConverterTest {
     @Test
     public void testConvert() throws Exception {
-        PitchToSprConverter converter = new PitchToSprConverter(new Logger(), false);
+        PitchToSprConverter converter = new PitchToSprConverter(new Logger(""), false);
         PaletteExtractor palette = new PaletteExtractor("USM-Colour-Palette.csv");
         BinaryService binaryService = new BinaryService();        
         

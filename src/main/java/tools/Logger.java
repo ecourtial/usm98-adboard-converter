@@ -6,21 +6,25 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public class Logger {
-        private static final String LOG_FILENAME = "log.txt";
+        private final String filename;
         private BufferedWriter logger;
         private boolean init = false;
+        
+        public Logger(String filename) {
+            this.filename = filename;
+        }
 
         public void log(String msg) throws IOException {
             if (false == this.init) {
-                File logFile = new File(Logger.LOG_FILENAME);
+                File logFile = new File(this.filename);
                 if (logFile.exists()) {
                     logFile.delete();
                 }
                 
-                this.logger = new BufferedWriter(new FileWriter(Logger.LOG_FILENAME, true));
+                this.logger = new BufferedWriter(new FileWriter(this.filename, true));
                 this.init = true;
             }
-            
+
             this.logger.append(System.lineSeparator() + msg);
         }
         

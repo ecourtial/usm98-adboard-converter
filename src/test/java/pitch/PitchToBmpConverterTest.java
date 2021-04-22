@@ -11,7 +11,7 @@ import tools.PaletteExtractor;
 public class PitchToBmpConverterTest {
     @Test
     public void testConvert() throws IOException, NoSuchAlgorithmException {
-        PitchToBmpConverter converter = new PitchToBmpConverter(new Logger(), false);
+        PitchToBmpConverter converter = new PitchToBmpConverter(new Logger(""), false);
         PaletteExtractor palette = new PaletteExtractor("USM-Colour-Palette.csv");
         BinaryService binaryService = new BinaryService();   
 

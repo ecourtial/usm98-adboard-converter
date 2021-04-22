@@ -223,7 +223,7 @@ public class USMTextureManager extends javax.swing.JFrame {
         this.log("Starting process...");
         this.log(message);
         this.enableUi(false);
-        Kernel kernel = new Kernel(this, new tools.Logger());
+        Kernel kernel = new Kernel(this, new tools.Logger("log.txt"));
         kernel.setAction(action);
         kernel.setParam1(param1);
         kernel.enableLog(logEnabled);
