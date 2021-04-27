@@ -25,17 +25,15 @@ public class Logger {
                 this.init = true;
             }
 
-            this.logger.append(System.lineSeparator() + msg);
+            this.logger.write(msg);
+            this.logger.newLine();
+            this.logger.flush();
         }
         
         @Override
         protected void finalize() throws IOException, Throwable {
-            try {
-                if (this.logger != null ){
-                    this.logger.close();
-                }
-            } finally {
-                super.finalize();
+            if (this.logger != null) {
+                this.logger.close();
             }
         }
 }
