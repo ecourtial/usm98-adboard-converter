@@ -6,7 +6,7 @@ import tools.BinaryService;
 import tools.Logger;
 import tools.PaletteExtractor;
 
-public class PitchToSprConverterTeste {
+public class PitchToSprConverterTest {
     @Test
     public void testConvert() throws Exception {
         PitchToSprConverter converter = new PitchToSprConverter(new Logger(""), false);
