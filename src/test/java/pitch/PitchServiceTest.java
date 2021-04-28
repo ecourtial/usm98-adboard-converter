@@ -6,6 +6,7 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.times;
+import pitch.tools.FileSuffix;
 import tools.BinaryService;
 import tools.PaletteColor;
 import tools.PaletteExtractor;
@@ -17,9 +18,12 @@ public class PitchServiceTest {
         PitchToBmpConverter pitchToBmpConverter = Mockito.mock(PitchToBmpConverter.class);
         PitchToSprConverter pitchToSprConverter = Mockito.mock(PitchToSprConverter.class);
         BinaryService binaryExtractor = Mockito.mock(BinaryService.class);
+        FileSuffix fileSuffixMock = Mockito.mock(FileSuffix.class);
 
-        PitchService service = new PitchService(paletteExtractor, pitchToBmpConverter, pitchToSprConverter, binaryExtractor);
+        PitchService service = new PitchService(paletteExtractor, pitchToBmpConverter, pitchToSprConverter, binaryExtractor, fileSuffixMock);
 
+        Mockito.when(fileSuffixMock.getFileCorrespondence(1)).thenReturn("Pitch_rn");
+        
         Map < String, PaletteColor > palette = new HashMap < > ();
         palette.put("00", new PaletteColor(255, 0, 255));
         palette.put("01", new PaletteColor(255, 111, 111));
@@ -50,7 +54,10 @@ public class PitchServiceTest {
         PitchToBmpConverter pitchToBmpConverter = Mockito.mock(PitchToBmpConverter.class);
         PitchToSprConverter pitchToSprConverter = Mockito.mock(PitchToSprConverter.class);
         BinaryService binaryExtractor = Mockito.mock(BinaryService.class);
+        FileSuffix fileSuffixMock = Mockito.mock(FileSuffix.class);
 
+        Mockito.when(fileSuffixMock.getFileCorrespondence(1)).thenReturn("Pitch_rn");
+        
         Map < String, String > ToSprColoursMap = new HashMap < > ();
         ToSprColoursMap.put("ahah", "hoho");
         Mockito.when(paletteExtractor.extractForConversionToSpr()).thenReturn(ToSprColoursMap);
@@ -58,7 +65,7 @@ public class PitchServiceTest {
         String hexContent = "35383835";
         Mockito.when(pitchToSprConverter.convert(ToSprColoursMap, "Pitch_rn.bmp", 670, 305)).thenReturn(hexContent);
 
-        PitchService service = new PitchService(paletteExtractor, pitchToBmpConverter, pitchToSprConverter, binaryExtractor);
+        PitchService service = new PitchService(paletteExtractor, pitchToBmpConverter, pitchToSprConverter, binaryExtractor, fileSuffixMock);
         service.convertToSpr(1);
 
         Mockito.verify(binaryExtractor, times(1)).writeHexString("Pitch_rn.spr", hexContent);

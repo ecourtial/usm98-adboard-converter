@@ -10,6 +10,7 @@ import java.util.Arrays;
 import pitch.PitchService;
 import pitch.PitchToBmpConverter;
 import pitch.PitchToSprConverter;
+import pitch.tools.FileSuffix;
 import tools.Logger;
 
 public class Kernel extends Thread {
@@ -98,7 +99,8 @@ public class Kernel extends Thread {
                new PaletteExtractor(Kernel.PALETTE_PATH),
                new PitchToBmpConverter(this.logger, this.loggerEnabled),
                new PitchToSprConverter(this.logger, this.loggerEnabled),
-               new BinaryService()
+               new BinaryService(),
+               new FileSuffix()
             );
         }
         
