@@ -2,14 +2,16 @@ package pitch;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+import org.mockito.Mockito;
 import tools.BinaryService;
-import tools.Logger;
+import tools.LoggerService;
 import tools.PaletteExtractor;
 
 public class PitchToSprConverterTest {
     @Test
     public void testConvert() throws Exception {
-        PitchToSprConverter converter = new PitchToSprConverter(new Logger(""), false);
+        LoggerService mockedLogger = Mockito.mock(LoggerService.class);
+        PitchToSprConverter converter = new PitchToSprConverter(mockedLogger);
         PaletteExtractor palette = new PaletteExtractor("USM-Colour-Palette.csv");
         BinaryService binaryService = new BinaryService();        
         

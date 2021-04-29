@@ -11,7 +11,7 @@ import pitch.PitchService;
 import pitch.PitchToBmpConverter;
 import pitch.PitchToSprConverter;
 import pitch.tools.FileSuffix;
-import tools.Logger;
+import tools.LoggerService;
 
 public class Kernel extends Thread {
 
@@ -24,9 +24,9 @@ public class Kernel extends Thread {
     private boolean loggerEnabled = false;
     
     private int Param1FromGui;
-    private final Logger logger;
+    private final LoggerService logger;
 
-    public Kernel(USMTextureManager userInterface, Logger logger) {
+    public Kernel(USMTextureManager userInterface, LoggerService logger) {
         this.ui = userInterface;
         this.logger = logger;
     }
@@ -83,8 +83,8 @@ public class Kernel extends Thread {
         if (this.addboardService == null) {
             this.addboardService = new AdboardsService(
                 new PaletteExtractor(Kernel.PALETTE_PATH),
-                new AdboardsToBmpConverter(),
-                new AdboardToSprConverter(),
+                new AdboardsToBmpConverter(this.logger),
+                new AdboardToSprConverter(this.logger),
                 new BinaryService()
             );
         }
@@ -97,8 +97,8 @@ public class Kernel extends Thread {
         if (this.pitchService == null){
             this.pitchService = new PitchService(
                new PaletteExtractor(Kernel.PALETTE_PATH),
-               new PitchToBmpConverter(this.logger, this.loggerEnabled),
-               new PitchToSprConverter(this.logger, this.loggerEnabled),
+               new PitchToBmpConverter(this.logger),
+               new PitchToSprConverter(this.logger),
                new BinaryService(),
                new FileSuffix()
             );

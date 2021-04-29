@@ -7,7 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 import javax.imageio.ImageIO;
-import tools.Logger;
+import tools.LoggerService;
 import tools.PaletteColor;
 
 public class PitchToBmpConverter {
@@ -15,18 +15,16 @@ public class PitchToBmpConverter {
     private boolean duplicateDominantColor1 = false;
     private boolean duplicateDominantColor2 = false;
     private boolean standardMode = false;
-    private boolean debugMode = false;
     private int x = 0;
     private int y = 0;
     private int width = 0;
     private int printedPixels = 0;
     private BufferedImage img;
     private Map < String, PaletteColor > coloursMap;
-    private final Logger logger;
+    private final LoggerService logger;
 
-    public PitchToBmpConverter(Logger logger, boolean debug) {
+    public PitchToBmpConverter(LoggerService logger) {
         this.logger = logger;
-        this.debugMode = debug;
     }
     
     public void convert(Map < String, PaletteColor > coloursMap, byte[] fileContent, int Width, int Height, String outputPath) throws IOException {
@@ -39,14 +37,14 @@ public class PitchToBmpConverter {
         int qty = 0;
         int cModeCount = 0;
 
-        this.debugMessage("Starting process. Dominant colors are " + dominantColor1 + " and " + dominantColor2);
+        this.logger.log("Starting process. Dominant colors are " + dominantColor1 + " and " + dominantColor2);
 
         for (int i = 10; i < fileContent.length; i++) {
             int currentByte = fileContent[i];
             String hex = this.getHexValue(currentByte);
             currentByte = (int) Long.parseLong(hex, 16);
 
-            this.debugMessage("Current value : " + currentByte + " - in hex: " + hex + " at " + i);
+            this.logger.log("Current value : " + currentByte + " - in hex: " + hex + " at " + i);
 
             if (mod == false) {
                 /**
@@ -63,24 +61,24 @@ public class PitchToBmpConverter {
                  */
                 if (currentByte >= 192 && currentByte <= 255) { // 207 = CA
                     qty = 1;
-                    this.debugMessage("To Cx mode : " + currentByte);
+                    this.logger.log("To Cx mode : " + currentByte);
                     cModeCount = currentByte - 191;
                     // Cx End of previous mode. Switch to unique mode ONLY for the following value.
                     cMode = true;
                     continue;
                 } else if (false == this.isDuplicationModeEnabled() && currentByte >= 64 && currentByte <= 127) { // Usage of dominant color
-                    this.debugMessage("To Dominant color 1 mode : " + currentByte);
+                    this.logger.log("To Dominant color 1 mode : " + currentByte);
                     this.duplicateDominantColor1 = true;
                     mod = true;
                     qty = currentByte - 63;
                 } else if (false == this.isDuplicationModeEnabled() && currentByte >= 128 && currentByte <= 191) {
-                    this.debugMessage("To Dominant color 2 mode : " + currentByte);
+                    this.logger.log("To Dominant color 2 mode : " + currentByte);
                     this.duplicateDominantColor2 = true;
                     qty = currentByte - 127;
                     mod = true;
                 } else if (false == this.isModeEnabled()) {
                     // Standard mode: 2 bytes (one for the qty, one for the color)
-                    this.debugMessage("To Standard  mode : " + currentByte);
+                    this.logger.log("To Standard  mode : " + currentByte);
                     this.standardMode = true;
                     mod = false;
                 }
@@ -118,7 +116,7 @@ public class PitchToBmpConverter {
                     this.draw(hex, qty);
                 } catch (IOException e) {
                     this.outputImage(outputPath); // To help the user to see where the file is corrupted
-                    this.debugMessage("An error was raised. Current coordinates are: " + this.x + " - " + this.y);
+                    this.logger.log("An error was raised. Current coordinates are: " + this.x + " - " + this.y);
                     throw e;
                 }
 
@@ -136,12 +134,6 @@ public class PitchToBmpConverter {
         }
 
         this.outputImage(outputPath);
-    }
-
-    private void debugMessage(String msg) throws IOException {
-        if (this.debugMode) {
-            this.logger.log(msg);
-        }
     }
 
     private void outputImage(String outputPath) throws IOException {
@@ -184,9 +176,9 @@ public class PitchToBmpConverter {
     }
 
     private boolean isEndOfLine() throws IOException {
-        this.debugMessage(this.printedPixels + " pixels draw so far (of " + this.width + ")");
+        this.logger.log(this.printedPixels + " pixels draw so far (of " + this.width + ")");
         if (this.printedPixels == this.width) {
-            this.debugMessage("Triggering new line");
+            this.logger.log("Triggering new line");
             this.x = 0;
             this.y++;
             this.printedPixels = 0;
@@ -204,10 +196,10 @@ public class PitchToBmpConverter {
             PaletteColor colorPalette = coloursMap.get(hex);
             color = new Color(colorPalette.getR(), colorPalette.getG(), colorPalette.getB(), 0);
         } else {
-            System.out.println("Missing color in the palette: " + hex);
+            this.logger.log("Missing color in the palette: " + hex);
         }
 
-        this.debugMessage("Wrinting " + qty + "  *  " + hex + " at " + this.x + " " + this.y);
+        this.logger.log("Wrinting " + qty + "  *  " + hex + " at " + this.x + " " + this.y);
         int qtyCpy = qty;
 
         while (qtyCpy > 0) {

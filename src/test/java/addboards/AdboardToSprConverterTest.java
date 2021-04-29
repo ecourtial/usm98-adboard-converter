@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+import org.mockito.Mockito;
+import tools.LoggerService;
 
 public class AdboardToSprConverterTest {
 
@@ -17,13 +19,14 @@ public class AdboardToSprConverterTest {
         BinaryService binaryService = new BinaryService();
         String outputPath = "src/test/assets/outputBmpTest2.bmp";
         binaryService.writeHexString(outputPath, bmpHexContent.replace(" ", ""));
+        LoggerService mockedLogger = Mockito.mock(LoggerService.class);
         
         Map<String, String> palette =  new HashMap < > ();
         palette.put("42-51-170", "35");
         palette.put( "181-4-2", "38");
         
         // Test
-        AdboardToSprConverter converter = new AdboardToSprConverter();
+        AdboardToSprConverter converter = new AdboardToSprConverter(mockedLogger);
         assertEquals(
                 "35383835",
                 converter.convert(palette, outputPath, 2, 2)

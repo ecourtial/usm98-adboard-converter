@@ -4,10 +4,11 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import static javax.swing.JOptionPane.showMessageDialog;
+import tools.Logger;
+import tools.LoggerService;
 
 public class USMTextureManager extends javax.swing.JFrame {
     /**
@@ -212,7 +213,6 @@ public class USMTextureManager extends javax.swing.JFrame {
         try {
             this.process(action, message, param1, this.logEnabledCheckbox.isSelected());
         } catch (InterruptedException ex) {
-            Logger.getLogger(USMTextureManager.class.getName()).log(Level.SEVERE, null, ex);
             this.showErrorBox("Impossible to perform operation: " + ex.getMessage());
         }
     }
@@ -223,7 +223,10 @@ public class USMTextureManager extends javax.swing.JFrame {
         this.log("Starting process...");
         this.log(message);
         this.enableUi(false);
-        Kernel kernel = new Kernel(this, new tools.Logger("log.txt"));
+        
+        LoggerService logger = new LoggerService(new Logger("log.txt"), logEnabled);
+        
+        Kernel kernel = new Kernel(this, logger);
         kernel.setAction(action);
         kernel.setParam1(param1);
         kernel.enableLog(logEnabled);

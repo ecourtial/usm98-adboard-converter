@@ -8,9 +8,17 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 import javax.imageio.ImageIO;
+import tools.LoggerService;
 
 public class AdboardsToBmpConverter {
 
+    private final LoggerService logger;
+
+    public AdboardsToBmpConverter(LoggerService logger) {
+        this.logger = logger;
+        
+    }
+    
     public void convert(Map < String, PaletteColor > coloursMap, byte[] fileContent, int Width, int Height, String outputPath) throws IOException {
 
         final BufferedImage img = new BufferedImage(Width, Height, BufferedImage.TYPE_INT_RGB);
@@ -18,6 +26,7 @@ public class AdboardsToBmpConverter {
         int y = 0;
 
         for (int i = 0; i < fileContent.length; i++) {
+            this.logger.log("Processing line #" + y);
             String hex = Integer.toHexString(fileContent[i]);
             if (hex.length() > 2) {
                 hex = hex.substring(hex.length() - 2);
@@ -35,7 +44,7 @@ public class AdboardsToBmpConverter {
                 PaletteColor colorPalette = coloursMap.get(hex);
                 color = new Color(colorPalette.getR(), colorPalette.getG(), colorPalette.getB(), 0);
             } else {
-                System.out.println("Missing color in the palette: " + hex);
+                this.logger.log("Missing color in the palette: " + hex);
             }
 
             img.setRGB(x, y, color.getRGB());

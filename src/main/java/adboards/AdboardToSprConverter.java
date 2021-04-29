@@ -6,9 +6,16 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 import javax.imageio.ImageIO;
+import tools.LoggerService;
 
 public class AdboardToSprConverter {
 
+    private final LoggerService logger;
+
+    public AdboardToSprConverter(LoggerService logger) {
+        this.logger = logger;
+    }
+    
     public String convert(
         Map < String, String > coloursMap,
         String bmpFilePath,
@@ -30,6 +37,7 @@ public class AdboardToSprConverter {
         String outputString = "";
 
         for (int y = 0; y < image.getHeight(); y++) {
+            this.logger.log("Processing line #" + y);
             for (int x = 0; x < image.getWidth(); x++) {
                 Color color = new Color(image.getRGB(x, y), true);
                 String colorString = color.getRed() + "-" + color.getGreen() + "-" + color.getBlue();
@@ -38,7 +46,7 @@ public class AdboardToSprConverter {
                     outputString += coloursMap.get(colorString);
                 } else {
                     outputString += "00"; // Black by default
-                    System.out.println("Color not found in palette: " + colorString);
+                    this.logger.log("Color not found in palette: " + colorString);
                 }
             }
         }

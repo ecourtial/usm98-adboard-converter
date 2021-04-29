@@ -9,7 +9,7 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 import pitch.tools.ColorSequence;
 import pitch.tools.SequencesContainer;
-import tools.Logger;
+import tools.LoggerService;
 import tools.ValueCounter;
 
 public class PitchToSprConverter {
@@ -20,13 +20,11 @@ public class PitchToSprConverter {
   private int width;
   private int height;
   private String hexStringToOutPut = "";
-  private boolean debug = false;
-  private final Logger logger;
+  private final LoggerService logger;
   private final Map < String, String > colorsNotFoundInPalette;
 
-  public PitchToSprConverter(Logger logger, boolean debug) {
+  public PitchToSprConverter(LoggerService logger) {
     this.logger = logger;
-    this.debug = debug;
     this.colorsNotFoundInPalette = new HashMap < > ();
   }
 
@@ -115,9 +113,9 @@ public class PitchToSprConverter {
 
     // If logging is enabled, we report all the missing colors.
     if (false == this.colorsNotFoundInPalette.isEmpty()) {
-      this.logMsg("The following colors were not found in the given palettes or override:");
+      this.logger.log("The following colors were not found in the given palettes or override:");
       for (String colorNotFound: this.colorsNotFoundInPalette.keySet()) {
-        this.logMsg("color with key " + colorNotFound);
+        this.logger.log("color with key " + colorNotFound);
       }
     }
 
@@ -127,7 +125,7 @@ public class PitchToSprConverter {
      */
     int totalLength = (this.hexStringToOutPut.length() + 16) / 2;
     String hexLength = Integer.toHexString(totalLength);
-    this.logMsg("Total length: " + totalLength + " bytes (" + hexLength + ").");
+    this.logger.log("Total length: " + totalLength + " bytes (" + hexLength + ").");
 
     return "50414B32000" + hexLength + this.dominantColor1 + this.dominantColor2 + this.hexStringToOutPut;
   }
@@ -188,9 +186,9 @@ public class PitchToSprConverter {
       container.add(currentSequence);
 
       // Toggle comment when debugging.
-      //  this.logMsg("Handling the current sequence (with index '" + (container.getSequencesCount() - 1) + "') contains a total of " + currentSequence.getSize() + " colors");
+      //  this.logger.log("Handling the current sequence (with index '" + (container.getSequencesCount() - 1) + "') contains a total of " + currentSequence.getSize() + " colors");
       //            for (String colorElement: currentSequence) {
-      //                this.logMsg("Entry -> " + colorElement);
+      //                this.logger.log("Entry -> " + colorElement);
       //            }
 
     }
@@ -245,8 +243,8 @@ public class PitchToSprConverter {
     this.dominantColor1 = this.getColourFromPalette(biggestOne.getValue());
     this.dominantColor2 = this.getColourFromPalette(biggestTwo.getValue());
 
-    this.logMsg("Dominant color #1: " + this.dominantColor1);
-    this.logMsg("Dominant color #2: " + this.dominantColor2);
+    this.logger.log("Dominant color #1: " + this.dominantColor1);
+    this.logger.log("Dominant color #2: " + this.dominantColor2);
 
     return chunks;
   }
@@ -257,13 +255,6 @@ public class PitchToSprConverter {
     } else {
       this.colorsNotFoundInPalette.put(colorString, colorString);
       return "38"; // Bright red by default to help highlight unrecognized colors
-    }
-  }
-
-  private void logMsg(String msg) throws IOException {
-    if (this.debug) {
-      System.out.println(msg);
-      this.logger.log(msg);
     }
   }
 }

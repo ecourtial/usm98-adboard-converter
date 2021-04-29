@@ -4,14 +4,16 @@ import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+import org.mockito.Mockito;
 import tools.BinaryService;
-import tools.Logger;
+import tools.LoggerService;
 import tools.PaletteExtractor;
 
 public class PitchToBmpConverterTest {
     @Test
     public void testConvert() throws IOException, NoSuchAlgorithmException {
-        PitchToBmpConverter converter = new PitchToBmpConverter(new Logger(""), false);
+        LoggerService mockedLogger = Mockito.mock(LoggerService.class);
+        PitchToBmpConverter converter = new PitchToBmpConverter(mockedLogger);
         PaletteExtractor palette = new PaletteExtractor("USM-Colour-Palette.csv");
         BinaryService binaryService = new BinaryService();   
 
