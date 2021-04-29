@@ -27,7 +27,7 @@ public class PaletteExtractor {
 
         for (Map.Entry < String, String > line: lines.entrySet()) {
             String[] values = line.getValue().split(String.valueOf(";"));
-            this.ToBmpColoursMap.put(values[4], new PaletteColor(Integer.valueOf(values[0]), Integer.valueOf(values[1]), Integer.valueOf(values[2])));
+            this.ToBmpColoursMap.put(values[4].trim(), new PaletteColor(Integer.valueOf(values[0].trim()), Integer.valueOf(values[1].trim()), Integer.valueOf(values[2].trim())));
         }
 
         return this.ToBmpColoursMap;
@@ -44,7 +44,7 @@ public class PaletteExtractor {
 
         for (Map.Entry < String, String > line: lines.entrySet()) {
             String[] values = line.getValue().split(String.valueOf(";"));
-            this.ToSprColoursMap.put(values[0] + "-" + values[1] + "-" + values[2], values[4]);
+            this.ToSprColoursMap.put(values[0].trim() + "-" + values[1].trim() + "-" + values[2].trim(), values[4].trim());
         }
 
         return this.ToSprColoursMap;

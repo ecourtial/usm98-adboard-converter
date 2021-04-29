@@ -10,6 +10,8 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+import org.mockito.Mockito;
+import tools.LoggerService;
 
 public class AdboardsToBmpConverterTest {
 
@@ -27,7 +29,8 @@ public class AdboardsToBmpConverterTest {
         int Width = 2;
         int Height = 2;
         String outputPath = "src/test/assets/outputBmpTest.bmp";
-        AdboardsToBmpConverter instance = new AdboardsToBmpConverter();
+        LoggerService mockedLogger = Mockito.mock(LoggerService.class);
+        AdboardsToBmpConverter instance = new AdboardsToBmpConverter(mockedLogger);
         instance.convert(coloursMap, fileContent, Width, Height, outputPath);
 
         // Check content

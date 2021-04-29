@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 import adboards.AdboardsService;
 import java.util.HashMap;
 import java.util.Map;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.times;
 import tools.PaletteColor;
@@ -85,6 +84,5 @@ public class AdboardsServiceTest {
 
         Mockito.verify(this.mockedBinaryService, times(1)).writeHexString("Adboards.spr", hexContent);
         Mockito.verify(this.mockedPaletteExtractor, times(1)).extractForConversionToSpr();
-        Mockito.verify(this.mockedAdboardToSprConverter, times(1)).convert(ToSprColoursMap, "Adboards.bmp", 85, 2244);
     }
 }
