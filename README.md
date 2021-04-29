@@ -30,7 +30,7 @@ This small application is designed to help you to edit the textures in the game 
 
 #### New features
 * Feature to import and export pitches (field).
-* When converting from BMP to SPR: you can use a color override configuration for colors not recognized by the palette.
+* When converting from BMP to SPR: you can use a feature which will use the more similar color in the palette to replace any unknown color.
 * Added a logger option to help modders to debug.
 
 #### Bufixes

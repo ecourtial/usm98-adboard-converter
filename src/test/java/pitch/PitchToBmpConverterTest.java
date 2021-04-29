@@ -7,14 +7,14 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.mockito.Mockito;
 import tools.BinaryService;
 import tools.LoggerService;
-import tools.PaletteExtractor;
+import tools.PaletteService;
 
 public class PitchToBmpConverterTest {
     @Test
     public void testConvert() throws IOException, NoSuchAlgorithmException {
         LoggerService mockedLogger = Mockito.mock(LoggerService.class);
-        PitchToBmpConverter converter = new PitchToBmpConverter(mockedLogger);
-        PaletteExtractor palette = new PaletteExtractor("USM-Colour-Palette.csv");
+        PaletteService palette = new PaletteService("USM-Colour-Palette.csv", mockedLogger);
+        PitchToBmpConverter converter = new PitchToBmpConverter(mockedLogger, palette);
         BinaryService binaryService = new BinaryService();   
 
         String inputPath = "src/test/assets/pitch/PITCH_RN.SPR";
@@ -22,7 +22,6 @@ public class PitchToBmpConverterTest {
         String outputPath = "src/test/assets/pitch/pitch_rn_test2.bmp";
         
         converter.convert(
-                palette.extractForConversionToBmp(),
                 binaryService.getFileContent(inputPath),
                 670,
                 305,

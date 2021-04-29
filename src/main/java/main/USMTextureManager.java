@@ -3,12 +3,9 @@ package main;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
 import javax.swing.ImageIcon;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import static javax.swing.JOptionPane.showMessageDialog;
-import tools.Logger;
-import tools.LoggerService;
 
 public class USMTextureManager extends javax.swing.JFrame {
     /**
@@ -224,12 +221,9 @@ public class USMTextureManager extends javax.swing.JFrame {
         this.log(message);
         this.enableUi(false);
         
-        LoggerService logger = new LoggerService(new Logger("log.txt"), logEnabled);
-        
-        Kernel kernel = new Kernel(this, logger);
+        Kernel kernel = new Kernel(this, logEnabled);
         kernel.setAction(action);
         kernel.setParam1(param1);
-        kernel.enableLog(logEnabled);
         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
 
         Thread kernelThread = new Thread(() -> {

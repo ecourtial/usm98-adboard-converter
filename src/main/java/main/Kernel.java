@@ -4,13 +4,14 @@ import adboards.AdboardsService;
 import adboards.AdboardsToBmpConverter;
 import adboards.AdboardToSprConverter;
 import tools.BinaryService;
-import tools.PaletteExtractor;
+import tools.PaletteService;
 import java.io.IOException;
 import java.util.Arrays;
 import pitch.PitchService;
 import pitch.PitchToBmpConverter;
 import pitch.PitchToSprConverter;
 import pitch.tools.FileSuffix;
+import tools.Logger;
 import tools.LoggerService;
 
 public class Kernel extends Thread {
@@ -21,14 +22,13 @@ public class Kernel extends Thread {
     private PitchService pitchService;
     private String action = "noDefinedActionSofar";
     private final USMTextureManager ui;
-    private boolean loggerEnabled = false;
     
     private int Param1FromGui;
     private final LoggerService logger;
 
-    public Kernel(USMTextureManager userInterface, LoggerService logger) {
+    public Kernel(USMTextureManager userInterface, boolean logEnabled) {
         this.ui = userInterface;
-        this.logger = logger;
+        this.logger = new LoggerService(new Logger("log.txt"), logEnabled);
     }
 
     // Set the action to run in the thread
@@ -39,11 +39,6 @@ public class Kernel extends Thread {
     // Set the Param 1 from Gui
     public void setParam1(int Param) {
         this.Param1FromGui = Param;
-    }
-
-    // Enable or disable logs
-    public void enableLog(boolean enabled) {
-        this.loggerEnabled = enabled;
     }
     
     @Override
@@ -82,9 +77,8 @@ public class Kernel extends Thread {
 
         if (this.addboardService == null) {
             this.addboardService = new AdboardsService(
-                new PaletteExtractor(Kernel.PALETTE_PATH),
-                new AdboardsToBmpConverter(this.logger),
-                new AdboardToSprConverter(this.logger),
+                new AdboardsToBmpConverter(this.logger, new PaletteService(Kernel.PALETTE_PATH, this.logger)),
+                new AdboardToSprConverter(this.logger, new PaletteService(Kernel.PALETTE_PATH, this.logger)),
                 new BinaryService()
             );
         }
@@ -96,9 +90,8 @@ public class Kernel extends Thread {
     private PitchService getPitchService() {
         if (this.pitchService == null){
             this.pitchService = new PitchService(
-               new PaletteExtractor(Kernel.PALETTE_PATH),
-               new PitchToBmpConverter(this.logger),
-               new PitchToSprConverter(this.logger),
+               new PitchToBmpConverter(this.logger, new PaletteService(Kernel.PALETTE_PATH, this.logger)),
+               new PitchToSprConverter(this.logger, new PaletteService(Kernel.PALETTE_PATH, this.logger)),
                new BinaryService(),
                new FileSuffix()
             );

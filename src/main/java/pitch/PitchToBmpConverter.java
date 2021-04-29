@@ -5,10 +5,9 @@ import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
 import javax.imageio.ImageIO;
 import tools.LoggerService;
-import tools.PaletteColor;
+import tools.PaletteService;
 
 public class PitchToBmpConverter {
     private boolean cMode = false;
@@ -20,16 +19,16 @@ public class PitchToBmpConverter {
     private int width = 0;
     private int printedPixels = 0;
     private BufferedImage img;
-    private Map < String, PaletteColor > coloursMap;
     private final LoggerService logger;
+    private final PaletteService paletteService;
 
-    public PitchToBmpConverter(LoggerService logger) {
+    public PitchToBmpConverter(LoggerService logger, PaletteService paletteService) {
         this.logger = logger;
+        this.paletteService = paletteService;
     }
     
-    public void convert(Map < String, PaletteColor > coloursMap, byte[] fileContent, int Width, int Height, String outputPath) throws IOException {
+    public void convert(byte[] fileContent, int Width, int Height, String outputPath) throws IOException {
         this.width = Width;
-        this.coloursMap = coloursMap;
         this.img = new BufferedImage(Width, Height, BufferedImage.TYPE_INT_RGB);
         String dominantColor1 = this.getHexValue(fileContent[8]);
         String dominantColor2 = this.getHexValue(fileContent[9]);
@@ -191,13 +190,7 @@ public class PitchToBmpConverter {
 
     private void draw(String hex, int qty) throws IOException {
 
-        Color color = new Color(0, 0, 0, 0);
-        if (coloursMap.containsKey(hex)) {
-            PaletteColor colorPalette = coloursMap.get(hex);
-            color = new Color(colorPalette.getR(), colorPalette.getG(), colorPalette.getB(), 0);
-        } else {
-            this.logger.log("Missing color in the palette: " + hex);
-        }
+        Color color = this.paletteService.getByHexValue(hex);
 
         this.logger.log("Wrinting " + qty + "  *  " + hex + " at " + this.x + " " + this.y);
         int qtyCpy = qty;
