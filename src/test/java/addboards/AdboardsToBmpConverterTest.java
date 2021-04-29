@@ -1,12 +1,10 @@
 package addboards;
 
 import adboards.AdboardsToBmpConverter;
-import tools.PaletteColor;
-import tools.PaletteExtractor;
+import tools.PaletteService;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.util.Map;
 import javax.imageio.ImageIO;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
@@ -17,9 +15,8 @@ public class AdboardsToBmpConverterTest {
 
     @Test
     public void testConvert() throws Exception {
-        System.out.println("convert to bmp");
-        PaletteExtractor extractor = new PaletteExtractor("USM-Colour-Palette.csv");
-        Map < String, PaletteColor > coloursMap = extractor.extractForConversionToBmp();
+        LoggerService mockedLogger = Mockito.mock(LoggerService.class);
+        PaletteService extractor = new PaletteService("USM-Colour-Palette.csv", mockedLogger);
         byte[] fileContent = {
             53,
             56,
@@ -29,9 +26,9 @@ public class AdboardsToBmpConverterTest {
         int Width = 2;
         int Height = 2;
         String outputPath = "src/test/assets/outputBmpTest.bmp";
-        LoggerService mockedLogger = Mockito.mock(LoggerService.class);
-        AdboardsToBmpConverter instance = new AdboardsToBmpConverter(mockedLogger);
-        instance.convert(coloursMap, fileContent, Width, Height, outputPath);
+
+        AdboardsToBmpConverter instance = new AdboardsToBmpConverter(mockedLogger, extractor);
+        instance.convert(fileContent, Width, Height, outputPath);
 
         // Check content
         File file = new File(outputPath);

@@ -1,14 +1,17 @@
 package addboards;
 
 import adboards.AdboardToSprConverter;
+import java.awt.Color;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import tools.BinaryService;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import javax.imageio.ImageIO;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import org.mockito.Mockito;
 import tools.LoggerService;
+import tools.PaletteService;
 
 public class AdboardToSprConverterTest {
 
@@ -20,16 +23,24 @@ public class AdboardToSprConverterTest {
         String outputPath = "src/test/assets/outputBmpTest2.bmp";
         binaryService.writeHexString(outputPath, bmpHexContent.replace(" ", ""));
         LoggerService mockedLogger = Mockito.mock(LoggerService.class);
-        
-        Map<String, String> palette =  new HashMap < > ();
-        palette.put("42-51-170", "35");
-        palette.put( "181-4-2", "38");
-        
+        PaletteService mockedPalette = Mockito.mock(PaletteService.class);
+
+
+        File file = new File(outputPath);
+        BufferedImage image = ImageIO.read(file);
+
+        Color color1 = new Color(image.getRGB(0, 0), true);
+        Color color2 = new Color(image.getRGB(1, 0), true);
+
+        Mockito.when(mockedPalette.getByColor(color1)).thenReturn("35");
+        Mockito.when(mockedPalette.getByColor(color2)).thenReturn("38");
+
         // Test
-        AdboardToSprConverter converter = new AdboardToSprConverter(mockedLogger);
+        AdboardToSprConverter converter = new AdboardToSprConverter(mockedLogger, mockedPalette);
+
         assertEquals(
-                "35383835",
-                converter.convert(palette, outputPath, 2, 2)
+            "35383835",
+            converter.convert(outputPath, 2, 2)
         );
     }
 }

@@ -4,20 +4,21 @@ import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
 import javax.imageio.ImageIO;
 import tools.LoggerService;
+import tools.PaletteService;
 
 public class AdboardToSprConverter {
 
     private final LoggerService logger;
+    private final PaletteService paletteService;
 
-    public AdboardToSprConverter(LoggerService logger) {
+    public AdboardToSprConverter(LoggerService logger, PaletteService paletteService) {
         this.logger = logger;
+        this.paletteService = paletteService;
     }
     
     public String convert(
-        Map < String, String > coloursMap,
         String bmpFilePath,
         int width,
         int height
@@ -39,19 +40,10 @@ public class AdboardToSprConverter {
         for (int y = 0; y < image.getHeight(); y++) {
             this.logger.log("Processing line #" + y);
             for (int x = 0; x < image.getWidth(); x++) {
-                Color color = new Color(image.getRGB(x, y), true);
-                String colorString = color.getRed() + "-" + color.getGreen() + "-" + color.getBlue();
-
-                if (coloursMap.containsKey(colorString)) {
-                    outputString += coloursMap.get(colorString);
-                } else {
-                    outputString += "00"; // Black by default
-                    this.logger.log("Color not found in palette: " + colorString);
-                }
+                 outputString += this.paletteService.getByColor(new Color(image.getRGB(x, y), true));
             }
         }
 
         return outputString;
     }
-
 }

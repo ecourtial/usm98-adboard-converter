@@ -10,27 +10,26 @@ import javax.imageio.ImageIO;
 import pitch.tools.ColorSequence;
 import pitch.tools.SequencesContainer;
 import tools.LoggerService;
+import tools.PaletteService;
 import tools.ValueCounter;
 
 public class PitchToSprConverter {
   private BufferedImage image;
-  private Map < String, String > coloursMap;
   private String dominantColor1;
   private String dominantColor2;
   private int width;
   private int height;
   private String hexStringToOutPut = "";
   private final LoggerService logger;
-  private final Map < String, String > colorsNotFoundInPalette;
+  private final PaletteService paletteService;
 
-  public PitchToSprConverter(LoggerService logger) {
+  public PitchToSprConverter(LoggerService logger, PaletteService paletteService) {
     this.logger = logger;
-    this.colorsNotFoundInPalette = new HashMap < > ();
+    this.paletteService = paletteService;
   }
 
   // Main method, called for the conversion process.
   public String convert(
-    Map < String, String > coloursMap,
     String bmpFilePath,
     int width,
     int height
@@ -38,7 +37,6 @@ public class PitchToSprConverter {
   ) throws Exception {
     File file = new File(bmpFilePath);
     this.image = ImageIO.read(file);
-    this.coloursMap = coloursMap;
     this.width = width;
     this.height = height;
 
@@ -108,14 +106,6 @@ public class PitchToSprConverter {
         this.outputDuplication(sequence.getFirstElement(), sequence.getSize());
       } else {
         this.outputSequence(sequence);
-      }
-    }
-
-    // If logging is enabled, we report all the missing colors.
-    if (false == this.colorsNotFoundInPalette.isEmpty()) {
-      this.logger.log("The following colors were not found in the given palettes or override:");
-      for (String colorNotFound: this.colorsNotFoundInPalette.keySet()) {
-        this.logger.log("color with key " + colorNotFound);
       }
     }
 
@@ -210,7 +200,7 @@ public class PitchToSprConverter {
     for (int y = 0; y < this.height; y++) {
       for (int x = 0; x < this.width; x++) {
         Color color = new Color(this.image.getRGB(x, y), true);
-        String colorString = color.getRed() + "-" + color.getGreen() + "-" + color.getBlue();
+        String colorString = this.paletteService.getByColor(color);
 
         if (colorsIndex.containsKey(colorString)) {
           colorsIndex.put(colorString, colorsIndex.get(colorString) + 1);
@@ -218,7 +208,7 @@ public class PitchToSprConverter {
           colorsIndex.put(colorString, 1);
         }
 
-        chunks[index] = this.getColourFromPalette(colorString);
+        chunks[index] = colorString;
         index++;
       }
     }
@@ -240,21 +230,12 @@ public class PitchToSprConverter {
       }
     }
 
-    this.dominantColor1 = this.getColourFromPalette(biggestOne.getValue());
-    this.dominantColor2 = this.getColourFromPalette(biggestTwo.getValue());
+    this.dominantColor1 = biggestOne.getValue();
+    this.dominantColor2 = biggestTwo.getValue();
 
     this.logger.log("Dominant color #1: " + this.dominantColor1);
     this.logger.log("Dominant color #2: " + this.dominantColor2);
 
     return chunks;
-  }
-
-  private String getColourFromPalette(String colorString) throws IOException {
-    if (this.coloursMap.containsKey(colorString)) {
-      return this.coloursMap.get(colorString);
-    } else {
-      this.colorsNotFoundInPalette.put(colorString, colorString);
-      return "38"; // Bright red by default to help highlight unrecognized colors
-    }
   }
 }
