@@ -23,7 +23,7 @@ This small application is designed to help you to edit the textures in the game 
 
 ## Changelog 
 
-The changelog is available [here](Changelog.MD])
+The changelog is available [here](Changelog.MD)
 
 ## Roadmap
 
