@@ -38,7 +38,7 @@ public class PitchServiceTest {
     }
 
     @Test
-    public void testConvertToSpr() throws IOException, Exception {
+    public void testConvertToSpr() throws IOException, Exception, Throwable {
         PitchToBmpConverter pitchToBmpConverter = Mockito.mock(PitchToBmpConverter.class);
         PitchToSprConverter pitchToSprConverter = Mockito.mock(PitchToSprConverter.class);
         BinaryService binaryExtractor = Mockito.mock(BinaryService.class);

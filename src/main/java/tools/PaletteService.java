@@ -204,8 +204,7 @@ public class PaletteService {
         return map;
     }
 
-    @Override
-    protected void finalize() throws IOException, Throwable {
+    public void outputNotFounds() throws IOException, Throwable {
         if (false == this.colorsNotFoundInPalette.isEmpty()) {
             this.logger.log("The following colors were not found in the given palettes or override:");
             for (String colorNotFound: this.colorsNotFoundInPalette.keySet()) {

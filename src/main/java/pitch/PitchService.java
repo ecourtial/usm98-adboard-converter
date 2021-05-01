@@ -35,7 +35,7 @@ public class PitchService {
         );
     }
 
-    public void convertToSpr(int key) throws IOException, Exception {
+    public void convertToSpr(int key) throws IOException, Exception, Throwable {
         String fileName = this.fileSuffix.getFileCorrespondence(key);
         this.binaryExtractor.writeHexString(fileName + ".spr",
             this.pitchToSprConverter.convert(

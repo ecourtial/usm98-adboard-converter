@@ -3,7 +3,6 @@ package addboards;
 import adboards.AdboardToSprConverter;
 import adboards.AdboardsToBmpConverter;
 import tools.BinaryService;
-import tools.PaletteService;
 import org.junit.jupiter.api.Test;
 import adboards.AdboardsService;
 import org.mockito.Mockito;
@@ -45,7 +44,7 @@ public class AdboardsServiceTest {
     }
 
     @Test
-    public void testConvertToSpr() throws Exception {
+    public void testConvertToSpr() throws Exception, Throwable {
         this.mockedBinaryService = Mockito.mock(BinaryService.class);
         this.mockedAdboardToSprConverter = Mockito.mock(AdboardToSprConverter.class);
 
