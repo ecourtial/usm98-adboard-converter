@@ -32,7 +32,7 @@ public class AdboardsService {
         );
     }
 
-    public void convertToSpr() throws IOException, Exception {
+    public void convertToSpr() throws IOException, Exception, Throwable {
         this.binaryExtractor.writeHexString(
             AdboardsService.OUTPUT_SPR_FILE_PATH,
             this.addBoardToSprConverter.convert(

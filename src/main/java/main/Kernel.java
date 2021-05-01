@@ -64,7 +64,7 @@ public class Kernel extends Thread {
             }
 
             this.ui.log("Done!");
-        } catch (Exception throwable) {
+        } catch (Throwable throwable) {
             this.ui.log("An error occured:");
             this.ui.log(throwable.getMessage());
             System.out.println(throwable.getMessage());

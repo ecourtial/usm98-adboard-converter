@@ -23,7 +23,7 @@ public class AdboardToSprConverter {
         int width,
         int height
 
-    ) throws IOException, Exception {
+    ) throws IOException, Exception, Throwable {
         File file = new File(bmpFilePath);
         BufferedImage image = ImageIO.read(file);
 
@@ -44,6 +44,8 @@ public class AdboardToSprConverter {
             }
         }
 
+        this.paletteService.outputNotFounds();
+        
         return outputString;
     }
 }

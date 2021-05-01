@@ -9,7 +9,7 @@ import tools.PaletteService;
 
 public class PitchToSprConverterTest {
     @Test
-    public void testConvert() throws Exception {
+    public void testConvert() throws Exception, Throwable {
         LoggerService mockedLogger = Mockito.mock(LoggerService.class);
         PaletteService palette = new PaletteService("USM-Colour-Palette.csv", mockedLogger, false);
         PitchToSprConverter converter = new PitchToSprConverter(mockedLogger, palette);

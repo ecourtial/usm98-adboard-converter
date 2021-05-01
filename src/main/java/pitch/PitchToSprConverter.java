@@ -34,7 +34,7 @@ public class PitchToSprConverter {
     int width,
     int height
 
-  ) throws Exception {
+  ) throws Exception, Throwable {
     File file = new File(bmpFilePath);
     this.image = ImageIO.read(file);
     this.width = width;
@@ -116,6 +116,8 @@ public class PitchToSprConverter {
     int totalLength = (this.hexStringToOutPut.length() + 16) / 2;
     String hexLength = Integer.toHexString(totalLength);
     this.logger.log("Total length: " + totalLength + " bytes (" + hexLength + ").");
+    
+    this.paletteService.outputNotFounds();
 
     return "50414B32000" + hexLength + this.dominantColor1 + this.dominantColor2 + this.hexStringToOutPut;
   }
