@@ -25,8 +25,11 @@ and help you to see if you used some colors not supported by the game. In this c
 still work, but the unknown colors will be replaced by a red one.
 
 However, in order to help you with unknown colors, you can select the "Enable auto colors" feature. This functionality
-will select the closest color in the palette (closest red, then closest green, and finally closest blue). Sometimes it will
-do the job as the color palette is quite large, sometimes it will give unexpected results.
+will select the closest color in the palette. Sometimes it will do the job as the color palette is quite large, but sometimes it will give unexpected results.
+The goal of this feature is to help you to reduce the amount of work to do when copy-pasting images :)
+
+Tip: in order to take it slowly step by step and to make the work easier for you, I suggest to try your work quite often
+in order to avoid to waste a lot of time to understand which color is causing issues.
 
 One last word: the code of this tool is open-sourced. You can find it here: https://github.com/ecourtial/usm98-textures-manager.
 
