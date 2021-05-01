@@ -39,6 +39,7 @@ public class USMTextureManager extends javax.swing.JFrame {
         PitchLabel = new javax.swing.JLabel();
         pitchToBmpButton = new javax.swing.JButton();
         pitchToSprButton = new javax.swing.JButton();
+        autoColorEnabledCheckbox = new javax.swing.JCheckBox();
         logEnabledCheckbox = new javax.swing.JCheckBox();
 
         jTextArea1.setColumns(20);
@@ -48,6 +49,7 @@ public class USMTextureManager extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("USM98 Textures Manager 1.1");
 
+        addboardsLabel.setFont(new java.awt.Font("Lucida Grande", 3, 13)); // NOI18N
         addboardsLabel.setText("Adboards");
 
         addboardsToBmpButton.setText("Export to BMP");
@@ -83,6 +85,7 @@ public class USMTextureManager extends javax.swing.JFrame {
         });
         jScrollPane3.setViewportView(PitchList);
 
+        PitchLabel.setFont(new java.awt.Font("Lucida Grande", 3, 13)); // NOI18N
         PitchLabel.setText("Pitch");
 
         pitchToBmpButton.setText("Export to BMP");
@@ -96,6 +99,13 @@ public class USMTextureManager extends javax.swing.JFrame {
         pitchToSprButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 pitchToSprButtonActionPerformed(evt);
+            }
+        });
+
+        autoColorEnabledCheckbox.setText("Enable auto-color");
+        autoColorEnabledCheckbox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                autoColorEnabledCheckboxActionPerformed(evt);
             }
         });
 
@@ -115,10 +125,6 @@ public class USMTextureManager extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 423, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(logEnabledCheckbox)
-                        .addGap(42, 42, 42)
-                        .addComponent(exitButton))
-                    .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(addboardsLabel)
                             .addComponent(PitchLabel)
@@ -134,7 +140,14 @@ public class USMTextureManager extends javax.swing.JFrame {
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                     .addComponent(addboardsToSprButton))))
                         .addGap(158, 158, 158)))
-                .addContainerGap(15, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(127, 127, 127)
+                .addComponent(autoColorEnabledCheckbox)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(logEnabledCheckbox)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(exitButton))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -147,21 +160,21 @@ public class USMTextureManager extends javax.swing.JFrame {
                     .addComponent(addboardsToSprButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(PitchLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 11, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(33, 33, 33)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(exitButton)
-                            .addComponent(logEnabledCheckbox)))
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(pitchToBmpButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(pitchToSprButton)))
-                .addContainerGap())
+                .addGap(58, 58, 58)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(autoColorEnabledCheckbox)
+                    .addComponent(logEnabledCheckbox)
+                    .addComponent(exitButton)))
         );
 
         pack();
@@ -202,26 +215,30 @@ public class USMTextureManager extends javax.swing.JFrame {
         this.triggerActionToKernel("pitchToSpr", "This conversion usually takes a few seconds.", selectedIndex);
     }//GEN-LAST:event_pitchToSprButtonActionPerformed
 
+    private void autoColorEnabledCheckboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_autoColorEnabledCheckboxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_autoColorEnabledCheckboxActionPerformed
+
     private void logEnabledCheckboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logEnabledCheckboxActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_logEnabledCheckboxActionPerformed
 
     private void triggerActionToKernel(String action, String message,  int param1) {
         try {
-            this.process(action, message, param1, this.logEnabledCheckbox.isSelected());
+            this.process(action, message, param1, this.logEnabledCheckbox.isSelected(), this.autoColorEnabledCheckbox.isSelected());
         } catch (InterruptedException ex) {
             this.showErrorBox("Impossible to perform operation: " + ex.getMessage());
         }
     }
     
     // Controlling the whole process in a thread
-    void process(String action, String message, int param1, boolean logEnabled) throws InterruptedException {
+    void process(String action, String message, int param1, boolean logEnabled, boolean autocolorSelectionEnabled) throws InterruptedException {
         this.consoleBox.setText("");
         this.log("Starting process...");
         this.log(message);
         this.enableUi(false);
         
-        Kernel kernel = new Kernel(this, logEnabled);
+        Kernel kernel = new Kernel(this, logEnabled, autocolorSelectionEnabled);
         kernel.setAction(action);
         kernel.setParam1(param1);
         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
@@ -289,6 +306,7 @@ public class USMTextureManager extends javax.swing.JFrame {
     private javax.swing.JLabel addboardsLabel;
     private javax.swing.JButton addboardsToBmpButton;
     private javax.swing.JButton addboardsToSprButton;
+    private javax.swing.JCheckBox autoColorEnabledCheckbox;
     private javax.swing.JTextArea consoleBox;
     private javax.swing.JButton exitButton;
     private javax.swing.JScrollPane jScrollPane1;

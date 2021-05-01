@@ -22,19 +22,13 @@ This small application is designed to help you to edit the textures in the game 
 * JUnit
 
 ## Changelog 
-### 1.0
-* Feature to export and import adboards.
-* Includes the color palette on CSV format.
 
-### 1.1
+The changelog is available (here)[Changelog.MD]
 
-#### New features
-* Feature to import and export pitches (field).
-* When converting from BMP to SPR: you can use a feature which will use the more similar color in the palette to replace any unknown color.
-* Added a logger option to help modders to debug.
+## Roadmap
 
-#### Bufixes
-* Fix error output in the console.
+### Features:
+* Add the possibility to edit goal nets.
 
-#### Miscellaneous
-* Trim entries when parsing the palette.
+### Misc:
+* In the log reports, provide the details of which colors were substitued when this option is enabled.

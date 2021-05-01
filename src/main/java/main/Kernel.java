@@ -18,6 +18,7 @@ public class Kernel extends Thread {
 
     private static final String PALETTE_PATH = "USM-Colour-Palette.csv";
 
+    private final PaletteService paletteService;
     private AdboardsService addboardService;
     private PitchService pitchService;
     private String action = "noDefinedActionSofar";
@@ -26,9 +27,10 @@ public class Kernel extends Thread {
     private int Param1FromGui;
     private final LoggerService logger;
 
-    public Kernel(USMTextureManager userInterface, boolean logEnabled) {
+    public Kernel(USMTextureManager userInterface, boolean logEnabled, boolean autocolorSelectionEnabled) {
         this.ui = userInterface;
         this.logger = new LoggerService(new Logger("log.txt"), logEnabled);
+        this.paletteService = new PaletteService(Kernel.PALETTE_PATH, this.logger, autocolorSelectionEnabled);
     }
 
     // Set the action to run in the thread
@@ -77,8 +79,8 @@ public class Kernel extends Thread {
 
         if (this.addboardService == null) {
             this.addboardService = new AdboardsService(
-                new AdboardsToBmpConverter(this.logger, new PaletteService(Kernel.PALETTE_PATH, this.logger)),
-                new AdboardToSprConverter(this.logger, new PaletteService(Kernel.PALETTE_PATH, this.logger)),
+                new AdboardsToBmpConverter(this.logger, this.paletteService),
+                new AdboardToSprConverter(this.logger, this.paletteService),
                 new BinaryService()
             );
         }
@@ -90,8 +92,8 @@ public class Kernel extends Thread {
     private PitchService getPitchService() {
         if (this.pitchService == null){
             this.pitchService = new PitchService(
-               new PitchToBmpConverter(this.logger, new PaletteService(Kernel.PALETTE_PATH, this.logger)),
-               new PitchToSprConverter(this.logger, new PaletteService(Kernel.PALETTE_PATH, this.logger)),
+               new PitchToBmpConverter(this.logger, this.paletteService),
+               new PitchToSprConverter(this.logger, this.paletteService),
                new BinaryService(),
                new FileSuffix()
             );
