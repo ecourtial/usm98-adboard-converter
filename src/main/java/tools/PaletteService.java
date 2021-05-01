@@ -13,7 +13,7 @@ public class PaletteService {
     private final String PalettePath;
     private Map < String, PaletteColor > toBmpColoursMap;
     private Map < String, String > toSprColoursMap;
-    private Map < Integer, Map < Integer, Map < Integer, String > > > rgbOrdererColorMap;
+    private Map < String, Color > objectColorMap;
     private Map < String, String > closestColorMap;
     private final LoggerService logger;
     private final Map < String, String > colorsNotFoundInPalette;
@@ -53,7 +53,7 @@ public class PaletteService {
         String outputString = "";
 
         if (this.toSprColoursMap.containsKey(colorString)) {
-            outputString += this.toSprColoursMap.get(colorString);
+            outputString = this.toSprColoursMap.get(colorString);
         } else {
             this.logger.log("Color not found in palette: " + colorString);
             this.colorsNotFoundInPalette.put(colorString, colorString);
@@ -61,11 +61,11 @@ public class PaletteService {
             if (this.tryClosestColorInPalette) {
                 String replacementValue = this.getClosestColor(color);
                 this.logger.log("Replacing with replacement value: " + replacementValue);
-                outputString += replacementValue; 
+                outputString = replacementValue; 
             } else {
                 String defaultValue = "38"; // Bright red by default
                 this.logger.log("Replacing with defaut value: " + defaultValue);
-                outputString += defaultValue; 
+                outputString = defaultValue; 
             }
         }
 
@@ -86,7 +86,7 @@ public class PaletteService {
     // Extract when you need the palette to be indexed by the RGB value. For instance "255020255"
     private void extractForConversionToSpr() throws FileNotFoundException, IOException {
         this.toSprColoursMap = new HashMap < > ();
-        this.rgbOrdererColorMap = new HashMap < > ();
+        this.objectColorMap = new HashMap < > ();
         this.closestColorMap = new HashMap < > ();
         Map < String, String > lines = this.extract(this.PalettePath);
 
@@ -97,88 +97,58 @@ public class PaletteService {
             String B = values[2].trim();
             String hexValue = values[4].trim();
             
-            this.toSprColoursMap.put(this.createToSprColorKey(Integer.valueOf(R), Integer.valueOf(G), Integer.valueOf(B)), hexValue);
-            this.addToClosestColorMap(R, G, B, hexValue);
+            int intR = Integer.valueOf(R);
+            int intG = Integer.valueOf(G);
+            int intB = Integer.valueOf(B);
+            
+            String colorKey = this.createToSprColorKey(intR, intG, intB);
+            
+            this.toSprColoursMap.put(colorKey, hexValue);
+            this.objectColorMap.put(colorKey, new Color(intR, intG, intB));
         }
     }
     
-    private void addToClosestColorMap(String R, String G, String B,  String hexValue) {
-        int intR = Integer.valueOf(R);
-        int intG = Integer.valueOf(G);
-        int intB = Integer.valueOf(B);
-        
-        if (false == this.rgbOrdererColorMap.containsKey(intR)) {
-            this.rgbOrdererColorMap.put(intR, new HashMap < > ());
-        }
-        
-        if (false == this.rgbOrdererColorMap.get(intR).containsKey(intG)) {
-            this.rgbOrdererColorMap.get(intR).put(intG, new HashMap < > ());
-        }
-        
-         if (false == this.rgbOrdererColorMap.get(intR).get(intG).containsKey(intB)) {
-             this.rgbOrdererColorMap.get(intR).get(intG).put(intB, hexValue);
-         }
-    }
-
     private String getClosestColor(Color color) {
         String targetKey = this.createToSprColorKey(color.getRed(), color.getGreen(), color.getBlue());
         
         if (this.closestColorMap.containsKey(targetKey)) {
-            return this.closestColorMap.get(targetKey);
-        }
-
-        int askedR = color.getRed();
-        int askedG = color.getGreen();
-        int askedB = color.getBlue();
-                 
-        int closestR = 0;
-        int closestG = 0;
-        int closestB = 0;
-        
-        for(int R: this.rgbOrdererColorMap.keySet()) {
-            closestR = this.calculateClosest(closestR, R, askedR);
+            return this.toSprColoursMap.get(this.closestColorMap.get(targetKey));
         }
         
-        for(int G: this.rgbOrdererColorMap.get(closestR).keySet()) {
-            closestG = this.calculateClosest(closestG, G, askedG);
+        double currentBestDistance = 999999;
+        String currentClosestKey = "";
+        
+        for(String currentKey: this.objectColorMap.keySet()) {
+            double currentDistance = this.calculateDistance(color, this.objectColorMap.get(currentKey));
+            
+            if (currentDistance < currentBestDistance) {
+                currentBestDistance = currentDistance;
+                currentClosestKey = currentKey;
+            }
         }
         
-        for(int B: this.rgbOrdererColorMap.get(closestR).get(closestG).keySet()) {
-            closestB = this.calculateClosest(closestB, B, askedB);
-        }
+        this.closestColorMap.put(targetKey, currentClosestKey);
         
-        String newKey = this.createToSprColorKey(closestR, closestG, closestB);
-        String value = this.toSprColoursMap.get(newKey);
-
-        this.closestColorMap.put(targetKey, value);
-        
-        return value;
+        return this.toSprColoursMap.get(currentClosestKey);
     }
     
-    private int calculateClosest(int currentClosest, int current, int asked) {        
-        if (currentClosest == 0) {
-            return current;
-        }
-        
-        int currentDifference = asked - currentClosest;
-        
-        if (currentDifference < 0 ) {
-            currentDifference = currentDifference * -1;
-        }
-        
-        int difference = asked - current;
-        
-        if (difference < 0 ) {
-            difference = difference * -1;
-        }
-        
-        if (difference > currentDifference) {
-            return currentClosest;
-        } else {
-            return current;
-        }
+    // source: https://stackoverflow.com/questions/6334311/whats-the-best-way-to-round-a-color-object-to-the-nearest-color-constant
+    private double calculateDistance(Color c1, Color c2) {
+            int red1 = c1.getRed();
+            int red2 = c2.getRed();
+            int rmean = (red1 + red2) >> 1;
+            int r = red1 - red2;
+            int g = c1.getGreen() - c2.getGreen();
+            int b = c1.getBlue() - c2.getBlue();
+            double distance = Math.sqrt((((512+rmean)*r*r)>>8) + 4*g*g + (((767-rmean)*b*b)>>8));
+            
+            if (distance < 0) {
+                distance = distance * -1;
+            }
+            
+            return distance;
     }
-    
+
     private String createToSprColorKey(int R, int G, int B) {
         return R + "-" + G + "-" + B;
     }
