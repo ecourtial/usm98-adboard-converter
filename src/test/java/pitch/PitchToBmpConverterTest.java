@@ -13,7 +13,7 @@ public class PitchToBmpConverterTest {
     @Test
     public void testConvert() throws IOException, NoSuchAlgorithmException {
         LoggerService mockedLogger = Mockito.mock(LoggerService.class);
-        PaletteService palette = new PaletteService("USM-Colour-Palette.csv", mockedLogger);
+        PaletteService palette = new PaletteService("USM-Colour-Palette.csv", mockedLogger, false);
         PitchToBmpConverter converter = new PitchToBmpConverter(mockedLogger, palette);
         BinaryService binaryService = new BinaryService();   
 

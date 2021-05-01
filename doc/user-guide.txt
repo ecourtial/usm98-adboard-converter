@@ -9,22 +9,24 @@ So far, you can edit:
 - Adboards
 - Pitches (field)
 
-In a few words, you can convert some files to BMP, edit them, and convert them the other way around. We reverse
-engineered the system to be able to do this conversion.
+In a few words, you can convert some files into a BMP format, edit them, and convert them the other way around. We reverse
+engineered the system to be able to do this conversion. The conversion itself is done using a matching between the colors
+supported by the game and "real ones". These colors are stored according to the RGB (Red, Green, Blue) standard.
 
 Special thanks to Dane Smallbone who took a lot of time to create the color palette and understood how
 Adboards are stored.
 
 A CSV palette is given containing the RGB values that are used by the game. You can use a fancy software
-to edit the BMP files, but the old fashioned MS Paint will perfectly do the job. This palette is used
+to edit the BMP files, but the old fashioned MS Paint will perfectly do the job. This CSV stored palette is used
 by the converter both ways.
 
 Note that you can, for some features, enable logging. It will generate a report at the root of the folder
 and help you to see if you used some colors not supported by the game. In this case, the conversion will
-still work, but the unknown colors will be replaced by a bright red.
+still work, but the unknown colors will be replaced by a red one.
 
-To help you with unknown colors, you can use a "override" file. It will help you to replace semi-automatically
-unknown colors by the ones you want. There is an exemple at the root of the folder.
+However, in order to help you with unknown colors, you can select the "Enable auto colors" feature. This functionality
+will select the closest color in the palette (closest red, then closest green, and finally closest blue). Sometimes it will
+do the job as the color palette is quite large, sometimes it will give unexpected results.
 
 One last word: the code of this tool is open-sourced. You can find it here: https://github.com/ecourtial/usm98-textures-manager.
 
@@ -46,7 +48,7 @@ with the previous version.
 3) Utilization
 -------------------
 
-Double click on the M98-Textures-1.1.jar file. The application will start.
+Double click on the USM98-Textures-1.1.jar file. The application will start.
 I suggest to make a copy of all the original files you want to edit, so you wouldn't have to reinstall
 the game if you damage some file.
 
@@ -69,5 +71,5 @@ To see which one you want to edit, start a game, save it before the next match. 
 Then, in the documentation folder of the USM textures manager, you will see a file named "pitch-correspondence". It will help you
 to see which one is the good to edit.
 
-A small tip : when you wan to do some tests, you reverse the left and right parts. It will help you to see almost
-the whole field without starting the match. Once you ok with your work, you just have to give them their "real" names back.
+A small tip : when you wan to do some tests, you can reverse the left and right parts (rename left to right...). It will help you to see almost
+the whole field without starting the match. Once you are ok with your work, you just have to give them their "real" names back.
