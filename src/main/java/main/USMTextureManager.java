@@ -182,7 +182,7 @@ public class USMTextureManager extends javax.swing.JFrame {
 
     // Click when converting addboards to BMP
     private void addboardsToBmpButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addboardsToBmpButtonActionPerformed
-        this.triggerActionToKernel("addboardsToBmp", "This conversion usually takes a few seconds.", 0);
+        this.triggerActionToKernel("addboardsToBmp", "This conversion usually takes a few seconds.", 0, false);
     }//GEN-LAST:event_addboardsToBmpButtonActionPerformed
 
     // Exit the app
@@ -192,7 +192,7 @@ public class USMTextureManager extends javax.swing.JFrame {
 
     // Click when converting addboards to SPR
     private void addboardsToSprButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addboardsToSprButtonActionPerformed
-        this.triggerActionToKernel("addboardsToSpr", "This conversion usually takes around one minute.", 0);
+        this.triggerActionToKernel("addboardsToSpr", "This conversion usually takes around one minute.", 0, true);
     }//GEN-LAST:event_addboardsToSprButtonActionPerformed
 
     // Convert a pitch to BMP
@@ -202,7 +202,7 @@ public class USMTextureManager extends javax.swing.JFrame {
             this.showErrorBox("You must select a pitch to be converted!");
             return;
         }
-        this.triggerActionToKernel("pitchToBmp", "This conversion usually takes a few seconds.", selectedIndex);
+        this.triggerActionToKernel("pitchToBmp", "This conversion usually takes a few seconds.", selectedIndex, false);
     }//GEN-LAST:event_pitchToBmpButtonActionPerformed
 
     // Convert a pitch to SPR
@@ -212,7 +212,7 @@ public class USMTextureManager extends javax.swing.JFrame {
             this.showErrorBox("You must select a pitch to be converted!");
             return;
         }
-        this.triggerActionToKernel("pitchToSpr", "This conversion usually takes a few seconds.", selectedIndex);
+        this.triggerActionToKernel("pitchToSpr", "This conversion usually takes a few seconds.", selectedIndex, false);
     }//GEN-LAST:event_pitchToSprButtonActionPerformed
 
     private void autoColorEnabledCheckboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_autoColorEnabledCheckboxActionPerformed
@@ -223,22 +223,29 @@ public class USMTextureManager extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_logEnabledCheckboxActionPerformed
 
-    private void triggerActionToKernel(String action, String message,  int param1) {
+    private void triggerActionToKernel(String action, String message,  int param1, boolean reducedPalette) {
         try {
-            this.process(action, message, param1, this.logEnabledCheckbox.isSelected(), this.autoColorEnabledCheckbox.isSelected());
+            this.process(action, message, param1, this.logEnabledCheckbox.isSelected(), this.autoColorEnabledCheckbox.isSelected(), reducedPalette);
         } catch (InterruptedException ex) {
             this.showErrorBox("Impossible to perform operation: " + ex.getMessage());
         }
     }
     
     // Controlling the whole process in a thread
-    void process(String action, String message, int param1, boolean logEnabled, boolean autocolorSelectionEnabled) throws InterruptedException {
+    void process(
+            String action,
+            String message,
+            int param1,
+            boolean logEnabled,
+            boolean autocolorSelectionEnabled,
+            boolean reducedPalette
+    ) throws InterruptedException {
         this.consoleBox.setText("");
         this.log("Starting process...");
         this.log(message);
         this.enableUi(false);
         
-        Kernel kernel = new Kernel(this, logEnabled, autocolorSelectionEnabled);
+        Kernel kernel = new Kernel(this, logEnabled, autocolorSelectionEnabled, reducedPalette);
         kernel.setAction(action);
         kernel.setParam1(param1);
         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();

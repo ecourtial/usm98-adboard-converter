@@ -20,7 +20,7 @@ public class PaletteServiceTest {
         expResult.put("01", new PaletteColor(215, 11, 28));
         expResult.put("02", new PaletteColor(255, 111, 33));
 
-         PaletteService instance = new PaletteService("src/test/assets/USM-Colour-Palette-test.csv", loggerService, false);        
+         PaletteService instance = new PaletteService("src/test/assets/USM-Colour-Palette-test.csv", loggerService, false, false);        
                 
         assertEquals(180, instance.getByHexValue("00").getRed());
         assertEquals(81, instance.getByHexValue("00").getGreen());
@@ -49,7 +49,7 @@ public class PaletteServiceTest {
         Color defaultColor = new Color (250, 114, 32, 1); // These values do not repesents anything in the palette
         
         // Test with no color substitution
-        PaletteService instance = new PaletteService("src/test/assets/USM-Colour-Palette-test.csv", loggerService, false);
+        PaletteService instance = new PaletteService("src/test/assets/USM-Colour-Palette-test.csv", loggerService, false, false);
         
         assertEquals("00", instance.getByColor(color1));
         assertEquals("01", instance.getByColor(color2));
@@ -57,7 +57,7 @@ public class PaletteServiceTest {
         assertEquals("38", instance.getByColor(defaultColor));
         
          // Test with color substitution
-        instance = new PaletteService("src/test/assets/USM-Colour-Palette-test.csv", loggerService, true);
+        instance = new PaletteService("src/test/assets/USM-Colour-Palette-test.csv", loggerService, true, false);
         
         assertEquals("00", instance.getByColor(color1));
         assertEquals("01", instance.getByColor(color2));

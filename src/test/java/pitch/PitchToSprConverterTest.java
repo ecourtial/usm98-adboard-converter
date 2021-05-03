@@ -11,7 +11,7 @@ public class PitchToSprConverterTest {
     @Test
     public void testConvert() throws Exception, Throwable {
         LoggerService mockedLogger = Mockito.mock(LoggerService.class);
-        PaletteService palette = new PaletteService("USM-Colour-Palette.csv", mockedLogger, false);
+        PaletteService palette = new PaletteService("USM-Colour-Palette.csv", mockedLogger, false, false);
         PitchToSprConverter converter = new PitchToSprConverter(mockedLogger, palette);
         BinaryService binaryService = new BinaryService();        
         

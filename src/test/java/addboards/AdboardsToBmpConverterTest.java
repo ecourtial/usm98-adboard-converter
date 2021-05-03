@@ -16,7 +16,7 @@ public class AdboardsToBmpConverterTest {
     @Test
     public void testConvert() throws Exception {
         LoggerService mockedLogger = Mockito.mock(LoggerService.class);
-        PaletteService extractor = new PaletteService("USM-Colour-Palette.csv", mockedLogger, false);
+        PaletteService extractor = new PaletteService("USM-Colour-Palette.csv", mockedLogger, false, false);
         byte[] fileContent = {
             53,
             56,

@@ -18,12 +18,14 @@ public class PaletteService {
     private final LoggerService logger;
     private final Map < String, String > colorsNotFoundInPalette;
     private final boolean tryClosestColorInPalette;
+    private final boolean reducedPalette;
 
-    public PaletteService(String PalettePath, LoggerService logger, boolean tryClosestColorInPalette) {
+    public PaletteService(String PalettePath, LoggerService logger, boolean tryClosestColorInPalette, boolean reducedPalette) {
         this.PalettePath = PalettePath;
         this.logger = logger;
         this.colorsNotFoundInPalette = new HashMap < > ();
         this.tryClosestColorInPalette = tryClosestColorInPalette;
+        this.reducedPalette = reducedPalette;
     }
 
     public Color getByHexValue(String hexValue) throws IOException {
@@ -56,28 +58,29 @@ public class PaletteService {
             outputString = this.toSprColoursMap.get(colorString);
         } else {
             this.logger.log("Color not found in palette: " + colorString);
-            this.colorsNotFoundInPalette.put(colorString, colorString);
-            
+
             if (this.tryClosestColorInPalette) {
                 String replacementValue = this.getClosestColor(color);
                 this.logger.log("Replacing with replacement value: " + replacementValue);
+                this.colorsNotFoundInPalette.put(colorString, replacementValue);
                 outputString = replacementValue; 
             } else {
                 String defaultValue = "38"; // Bright red by default
+                this.colorsNotFoundInPalette.put(colorString, colorString);
                 this.logger.log("Replacing with defaut value: " + defaultValue);
                 outputString = defaultValue; 
             }
         }
-
+        
         return outputString;
     }
 
     // Extract when you need the palette to be indexed by the Hex value
     private void extractForConversionToBmp() throws FileNotFoundException, IOException {
         this.toBmpColoursMap = new HashMap < > ();
-        Map < String, String > lines = this.extract(this.PalettePath);
+        Map < Integer, String > lines = this.extract(this.PalettePath);
 
-        for (Map.Entry < String, String > line: lines.entrySet()) {
+        for (Map.Entry < Integer, String > line: lines.entrySet()) {
             String[] values = line.getValue().split(String.valueOf(";"));
             this.toBmpColoursMap.put(values[4].trim(), new PaletteColor(Integer.valueOf(values[0].trim()), Integer.valueOf(values[1].trim()), Integer.valueOf(values[2].trim())));
         }
@@ -88,14 +91,22 @@ public class PaletteService {
         this.toSprColoursMap = new HashMap < > ();
         this.objectColorMap = new HashMap < > ();
         this.closestColorMap = new HashMap < > ();
-        Map < String, String > lines = this.extract(this.PalettePath);
+        Map < Integer, String > lines = this.extract(this.PalettePath);
 
-        for (Map.Entry < String, String > line: lines.entrySet()) {
+        for (Map.Entry < Integer, String > line: lines.entrySet()) {
             String[] values = line.getValue().split(String.valueOf(";"));
             String R = values[0].trim();
             String G = values[1].trim();
             String B = values[2].trim();
             String hexValue = values[4].trim();
+            
+            if (hexValue.equals("84") && this.reducedPalette) { // For addboards, palette is limited
+                break;
+            }
+            
+            if (hexValue.length() == 1) {
+                hexValue = "0" + hexValue;
+            }
             
             int intR = Integer.valueOf(R);
             int intG = Integer.valueOf(G);
@@ -153,11 +164,11 @@ public class PaletteService {
         return R + "-" + G + "-" + B;
     }
     
-    private Map < String, String > extract(String path) throws FileNotFoundException, IOException {
-        Map < String, String > map = new HashMap < > ();
-        int count = 1;
+    private Map < Integer, String > extract(String path) throws FileNotFoundException, IOException {
+        Map < Integer, String > map = new HashMap < > ();
+        int count = 0;
 
-        try (BufferedReader br = new BufferedReader(new FileReader(path))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(path))) {           
             String line;
             boolean firstLine = true;
 
@@ -167,7 +178,7 @@ public class PaletteService {
                     continue;
                 }
                 count++;
-                map.put(String.valueOf(count), line);
+                map.put(count, line);
             }
         }
 
@@ -176,9 +187,20 @@ public class PaletteService {
 
     public void outputNotFounds() throws IOException, Throwable {
         if (false == this.colorsNotFoundInPalette.isEmpty()) {
+            Logger colorCorrespondanceLogger = new Logger("conversions.csv");
+            colorCorrespondanceLogger.log("");
             this.logger.log("The following colors were not found in the given palettes or override:");
+            
             for (String colorNotFound: this.colorsNotFoundInPalette.keySet()) {
-                this.logger.log("color with key " + colorNotFound);
+                if (this.tryClosestColorInPalette) {
+                    String closestValue = this.closestColorMap.get(colorNotFound);
+                    this.logger.log(colorNotFound + " -> Replaced by: " + closestValue);
+
+                    String[] rgbValues = colorNotFound.split("-", -1);
+                    colorCorrespondanceLogger.log(rgbValues[0] + ";" + rgbValues[1] + ";" + rgbValues[2] + ";;" + this.toSprColoursMap.get(closestValue));
+                } else {
+                    this.logger.log(colorNotFound);
+                }
             }
         }
     }

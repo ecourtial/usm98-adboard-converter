@@ -27,10 +27,10 @@ public class Kernel extends Thread {
     private int Param1FromGui;
     private final LoggerService logger;
 
-    public Kernel(USMTextureManager userInterface, boolean logEnabled, boolean autocolorSelectionEnabled) {
+    public Kernel(USMTextureManager userInterface, boolean logEnabled, boolean autocolorSelectionEnabled, boolean reducedPalette) {
         this.ui = userInterface;
         this.logger = new LoggerService(new Logger("log.txt"), logEnabled);
-        this.paletteService = new PaletteService(Kernel.PALETTE_PATH, this.logger, autocolorSelectionEnabled);
+        this.paletteService = new PaletteService(Kernel.PALETTE_PATH, this.logger, autocolorSelectionEnabled, reducedPalette);
     }
 
     // Set the action to run in the thread
