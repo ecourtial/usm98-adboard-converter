@@ -13,12 +13,16 @@ In a few words, you can convert some files into a BMP format, edit them, and con
 engineered the system to be able to do this conversion. The conversion itself is done using a matching between the colors
 supported by the game and "real ones". These colors are stored according to the RGB (Red, Green, Blue) standard.
 
+TIP: I suggest you to convert everything into BMP at first and make a backup somewhere.
+
 Special thanks to Dane Smallbone who took a lot of time to create the color palette and understood how
 Adboards are stored.
 
 A CSV palette is given containing the RGB values that are used by the game. You can use a fancy software
 to edit the BMP files, but the old fashioned MS Paint will perfectly do the job. This CSV stored palette is used
-by the converter both ways.
+by the converter both ways. You can also find in the root folder a PDF file showing the color correspondance.
+
+NOTE: the color palette is limited to the first 83 colors for the adboards.
 
 Note that you can, for some features, enable logging. It will generate a report at the root of the folder
 and help you to see if you used some colors not supported by the game. In this case, the conversion will
@@ -26,9 +30,9 @@ still work, but the unknown colors will be replaced by a red one.
 
 However, in order to help you with unknown colors, you can select the "Enable auto colors" feature. This functionality
 will select the closest color in the palette. Sometimes it will do the job as the color palette is quite large, but sometimes it will give unexpected results.
-The goal of this feature is to help you to reduce the amount of work to do when copy-pasting images :)
+The goal of this feature is to help you to reduce the amount of work to do when copy-paste images :)
 
-Tip: in order to take it slowly step by step and to make the work easier for you, I suggest to try your work quite often
+TIP: in order to take it slowly step by step and to make the work easier for you, I suggest to try your work quite often
 in order to avoid to waste a lot of time to understand which color is causing issues.
 
 One last word: the code of this tool is open-sourced. You can find it here: https://github.com/ecourtial/usm98-textures-manager.
