@@ -67,6 +67,9 @@ you put the textures manager. Then click on the corresponding button to export i
 To do the opposite, you obviously  need to have your BMP file (Adboards.bmp) in the folder. Just click in the other
 button to export it into a SPR file and copy the new file into the USM folder.
 
+TIP: the first time you will export addboards to BMP, you will notice a dark red line, on both side of the file. Replace it by
+dark. Otherwise, when converting back to SPR, the red lines still will be here in the game.
+
 -------------- 3.2) Pitches -------------- 
 
 Pitches are the field files. It includes the grass, the lines, the goals posts and nets. So far you can only edit
