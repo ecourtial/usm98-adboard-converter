@@ -22,7 +22,8 @@ A CSV palette is given containing the RGB values that are used by the game. You 
 to edit the BMP files, but the old fashioned MS Paint will perfectly do the job. This CSV stored palette is used
 by the converter both ways. You can also find in the root folder a PDF file showing the color correspondance.
 
-NOTE: the color palette is limited to the first 83 colors for the adboards.
+NOTE: the color palette is limited to the first 83 colors. The others color beyond this index are not used because
+so far we faced some issues with them.
 
 Note that you can, for some features, enable logging. It will generate a report at the root of the folder
 and help you to see if you used some colors not supported by the game. In this case, the conversion will

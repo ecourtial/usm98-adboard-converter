@@ -25,7 +25,7 @@ public class PaletteService {
         this.logger = logger;
         this.colorsNotFoundInPalette = new HashMap < > ();
         this.tryClosestColorInPalette = tryClosestColorInPalette;
-        this.reducedPalette = reducedPalette;
+        this.reducedPalette = true; // Currently overriden to bypass issue in the palette
     }
 
     public Color getByHexValue(String hexValue) throws IOException {

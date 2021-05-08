@@ -21,6 +21,7 @@ public class PitchToBmpConverter {
     private BufferedImage img;
     private final LoggerService logger;
     private final PaletteService paletteService;
+    private int height;
 
     public PitchToBmpConverter(LoggerService logger, PaletteService paletteService) {
         this.logger = logger;
@@ -29,6 +30,7 @@ public class PitchToBmpConverter {
     
     public void convert(byte[] fileContent, int Width, int Height, String outputPath) throws IOException {
         this.width = Width;
+        this.height = Height;
         this.img = new BufferedImage(Width, Height, BufferedImage.TYPE_INT_RGB);
         String dominantColor1 = this.getHexValue(fileContent[8]);
         String dominantColor2 = this.getHexValue(fileContent[9]);
@@ -196,6 +198,12 @@ public class PitchToBmpConverter {
         int qtyCpy = qty;
 
         while (qtyCpy > 0) {
+            
+            if (this.y >= this.height) {
+                this.logger.log(("Woops! We excedeed the max height of the file!"));
+                return; // Should not happen. Security to avoid bugs and help debug.
+            }
+            
             this.img.setRGB(this.x, this.y, color.getRGB());
             this.printedPixels++;
             qtyCpy--;
