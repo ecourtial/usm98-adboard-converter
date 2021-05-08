@@ -18,7 +18,7 @@ public class PitchToSprConverterTest {
         String content = converter.convert("src/test/assets/pitch/pitch_rn.bmp", 670, 305);
         binaryService.writeHexString("src/test/assets/pitch/TEST.SPR", content);
         
-        String targetChecksum = binaryService.getFileCheckSum("src/test/assets/pitch/PITCH_RN.SPR");
+        String targetChecksum = binaryService.getFileCheckSum("src/test/assets/pitch/Pitch_rn.spr");
         String currentChecksum = binaryService.getFileCheckSum("src/test/assets/pitch/TEST.SPR");
         
         assertEquals(targetChecksum, currentChecksum);

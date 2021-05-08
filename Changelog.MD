@@ -12,6 +12,7 @@
 
 #### Bufixes
 * Fix error output in the console.
+* Reduced color palette width to 83 colors because some of them were not usable or different between features.
 
 #### Miscellaneous
 * Trim entries when parsing the palette.

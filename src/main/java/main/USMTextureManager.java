@@ -232,7 +232,13 @@ public class USMTextureManager extends javax.swing.JFrame {
     }
     
     // Controlling the whole process in a thread
-    void process(String action, String message, int param1, boolean logEnabled, boolean autocolorSelectionEnabled) throws InterruptedException {
+    void process(
+            String action,
+            String message,
+            int param1,
+            boolean logEnabled,
+            boolean autocolorSelectionEnabled
+    ) throws InterruptedException {
         this.consoleBox.setText("");
         this.log("Starting process...");
         this.log(message);
