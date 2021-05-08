@@ -18,14 +18,12 @@ public class PaletteService {
     private final LoggerService logger;
     private final Map < String, String > colorsNotFoundInPalette;
     private final boolean tryClosestColorInPalette;
-    private final boolean reducedPalette;
 
-    public PaletteService(String PalettePath, LoggerService logger, boolean tryClosestColorInPalette, boolean reducedPalette) {
+    public PaletteService(String PalettePath, LoggerService logger, boolean tryClosestColorInPalette) {
         this.PalettePath = PalettePath;
         this.logger = logger;
         this.colorsNotFoundInPalette = new HashMap < > ();
         this.tryClosestColorInPalette = tryClosestColorInPalette;
-        this.reducedPalette = true; // Currently overriden to bypass issue in the palette
     }
 
     public Color getByHexValue(String hexValue) throws IOException {
@@ -99,12 +97,8 @@ public class PaletteService {
             String G = values[1].trim();
             String B = values[2].trim();
             String hexValue = values[4].trim();
-            
-            if (hexValue.equals("84") && this.reducedPalette) { // For addboards, palette is limited
-                break;
-            }
-            
-            if (hexValue.length() == 1) {
+         
+            if (hexValue.length() == 1) { // Safety
                 hexValue = "0" + hexValue;
             }
             
