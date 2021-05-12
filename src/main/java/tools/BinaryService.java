@@ -11,9 +11,15 @@ import java.security.NoSuchAlgorithmException;
 
 public class BinaryService {
 
-    public byte[] getFileContent(String filePath) throws IOException {
+    public byte[] getFileContent(String filePath) throws Exception {
         File file = new File(filePath);
-        byte[] fileContent = Files.readAllBytes(file.toPath());
+        byte[] fileContent;
+        
+        try {
+            fileContent = Files.readAllBytes(file.toPath());
+        } catch (IOException ex) {
+            throw new Exception("Image file not found: " + filePath);
+        }
 
         return fileContent;
     }
