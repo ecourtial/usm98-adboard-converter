@@ -23,7 +23,7 @@ public class AdboardsService {
         this.binaryExtractor = binaryExtractor;
     }
 
-    public void convertToBmp() throws IOException {
+    public void convertToBmp() throws IOException, Exception {
         this.addBoardToBmpConverter.convert(
             this.binaryExtractor.getFileContent(AdboardsService.OUTPUT_SPR_FILE_PATH),
             AdboardsService.ADDBOARDS_IMAGE_WIDTH,
