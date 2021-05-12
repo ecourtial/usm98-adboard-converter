@@ -36,7 +36,11 @@ public class PitchToSprConverter {
 
   ) throws Exception, Throwable {
     File file = new File(bmpFilePath);
-    this.image = ImageIO.read(file);
+      try {
+          this.image = ImageIO.read(file);
+      } catch (IOException ex) {
+          throw new Exception("Image file not found: " + bmpFilePath);
+      }
     this.width = width;
     this.height = height;
 

@@ -17,7 +17,7 @@ public class PitchToBmpConverterTest {
         PitchToBmpConverter converter = new PitchToBmpConverter(mockedLogger, palette);
         BinaryService binaryService = new BinaryService();   
 
-        String inputPath = "src/test/assets/pitch/PITCH_RN.SPR";
+        String inputPath = "src/test/assets/pitch/Pitch_rn.spr";
         String targetPath = "src/test/assets/pitch/pitch_rn_test.bmp";
         String outputPath = "src/test/assets/pitch/pitch_rn_test2.bmp";
         

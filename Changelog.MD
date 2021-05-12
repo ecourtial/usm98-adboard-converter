@@ -16,3 +16,10 @@
 
 #### Miscellaneous
 * Trim entries when parsing the palette.
+
+### 1.1.1
+
+#### Miscellaneous
+* Fixed an unit test.
+* Improved error message when a file to read is missing.
+* Improved documentation.

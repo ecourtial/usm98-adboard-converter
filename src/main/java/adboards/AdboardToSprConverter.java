@@ -23,9 +23,14 @@ public class AdboardToSprConverter {
         int width,
         int height
 
-    ) throws IOException, Exception, Throwable {
+    ) throws Exception, Throwable {
         File file = new File(bmpFilePath);
-        BufferedImage image = ImageIO.read(file);
+        BufferedImage image;
+        try {
+            image = ImageIO.read(file);
+        } catch (IOException ex) {
+            throw new Exception("Image file not found: " + bmpFilePath);
+        }
 
         if (image.getWidth() != width || image.getHeight() != height) {
             throw new Exception("Image must have a width of  " + width + " pixels and height must be of  " + height + "!");
