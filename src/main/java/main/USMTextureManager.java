@@ -47,7 +47,7 @@ public class USMTextureManager extends javax.swing.JFrame {
         jScrollPane1.setViewportView(jTextArea1);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("USM98 Textures Manager 1.1");
+        setTitle("USM98 Textures Manager 1.1.1");
 
         addboardsLabel.setFont(new java.awt.Font("Lucida Grande", 3, 13)); // NOI18N
         addboardsLabel.setText("Adboards");
